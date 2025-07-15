@@ -17,6 +17,16 @@ export default antfu({
 			],
 		},
 	},
-	formatters: true,
+	formatters: {
+		astro: 'prettier',
+		html: true,
+		css: true,
+		prettierOptions: {
+			tailwindStylesheet: './src/styles/global.css',
+			plugins: [
+				'prettier-plugin-tailwindcss',
+			],
+		},
+	},
 	astro: true,
 });
