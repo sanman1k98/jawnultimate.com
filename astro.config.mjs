@@ -8,4 +8,9 @@ export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 	},
+	experimental: {
+		// The following will be the new defaults in Astro 6.
+		preserveScriptOrder: true,
+		headingIdCompat: true,
+	},
 });
