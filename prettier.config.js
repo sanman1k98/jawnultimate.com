@@ -8,7 +8,7 @@ export default {
 	useTabs: true,
 	plugins: [
 		'prettier-plugin-astro',
-		'prettier-plugin-tailwind',
+		'prettier-plugin-tailwindcss',
 	],
 	overrides: [
 		{
