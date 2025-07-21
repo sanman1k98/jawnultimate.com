@@ -8,7 +8,7 @@ type Props = BaseLayoutProps;
 <BaseLayout {...Astro.props}>
 	<slot name="head" slot="head" />
 	<Header />
-	<main>
+	<main class="grow">
 		<slot />
 	</main>
 	<Footer />

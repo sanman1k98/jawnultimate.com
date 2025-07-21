@@ -98,7 +98,7 @@ const { title, description, locale } = parsed.data ?? {};
 		<title>{title}</title>
 		<slot name="head" />
 	</head>
-	<body>
+	<body class="flex min-h-screen flex-col">
 		<slot />
 	</body>
 </html>
