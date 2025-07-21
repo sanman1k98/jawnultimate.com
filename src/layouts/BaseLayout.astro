@@ -96,6 +96,7 @@ const { title, description, locale } = parsed.data ?? {};
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<slot name="head" />
 	</head>
 	<body>
 		<slot />
