@@ -45,15 +45,9 @@ const ogSchema = z.object({
 const twitterSchema = z.object({
 	card: z.enum(['summary', 'summary_large_image']).default('summary_large_image'),
 	/** Username for the website used in the card footer. */
-	site: z
-		.string()
-		.refine((str) => str.startsWith('@'))
-		.optional(),
+	site: z.string().startsWith('@').optional(),
 	/** Username for the content creator or author. */
-	creator: z
-		.string()
-		.refine((str) => str.startsWith('@'))
-		.optional(),
+	creator: z.string().startsWith('@').optional(),
 });
 
 const headMeta = basic
