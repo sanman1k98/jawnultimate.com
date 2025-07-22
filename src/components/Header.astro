@@ -1,4 +1,10 @@
-<header class="bg-emerald-600 p-8">
+---
+type Props = {
+	class?: string;
+};
+---
+
+<header class:list={['bg-emerald-600 p-8', Astro.props.class]}>
 	<ul class="mx-auto flex items-center justify-center gap-x-2 text-lg text-white font-stretch-semi-expanded">
 		<li>⬅</li>
 		<li>1700</li>

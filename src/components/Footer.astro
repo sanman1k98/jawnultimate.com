@@ -1,4 +1,10 @@
-<footer class="text-emerald-800 mb-16">
+---
+type Props = {
+	class?: string;
+};
+---
+
+<footer class:list={['mb-16 text-emerald-800', Astro.props.class]}>
 	<ul class="mx-auto flex justify-center gap-x-4 p-4">
 		<li>
 			<a href="https://www.instagram.com/jawn_ultimate/">InstaJAWN</a>
