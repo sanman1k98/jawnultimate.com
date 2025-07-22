@@ -1,0 +1,87 @@
+title: Summer 2025 Mixed
+players:
+  - name: Jin
+    number: '00'
+  - name: Ava
+    number: 1
+  - name: Kash
+    number: 2
+  - name: Jeremy
+    number: 3
+  - name: Jackie
+    number: 5
+  - name: Kye
+    number: 6
+  - name: Ang Ngo
+    number: 7
+  - name: Wolfgang
+    number: 8
+  - name: Clapper
+    number: 9
+  - name: Linda
+    number: 10
+  - name: Levy
+    number: 11
+  - name: Sam
+    number: 12
+  - name: Spud
+    number: 13
+  - name: Maddie
+    number: 14
+    captain: true
+  - name: Alyssa
+    number: 16
+  - name: Andrew Ngo
+    number: 17
+  - name: Novak
+    number: 18
+  - name: Migs
+    number: 19
+  - name: Currie
+    number: 20
+  - name: Phou
+    number: 21
+  - name: Sabra
+    number: 23
+  - name: Ed
+    number: 25
+  - name: Maria
+    number: 26
+  - name: Tolu
+    number: 27
+  - name: Christina Ngo
+    number: 29
+  - name: Sully
+    number: 33
+  - name: Max Rooney
+    number: 38
+  - name: Lucas
+    number: 43
+  - name: Shamar
+    number: 45
+  - name: Max Blacklock
+    number: 56
+  - name: Barczak
+    number: 57
+    captain: true
+  - name: Will Shutt
+    number: 62
+  - name: Faron
+    number: 64
+  - name: Kelly
+    number: 66
+    captain: true
+  - name: White Boy
+    number: 67
+  - name: Ben Bruzek
+    number: 77
+  - name: Biscuit
+    number: 80
+  - name: Heacock
+    number: 89
+  - name: Julia
+    number: 93
+  - name: Sandeep
+    number: 98
+  - name: JP
+    number: 99
