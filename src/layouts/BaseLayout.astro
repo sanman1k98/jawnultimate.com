@@ -76,11 +76,15 @@ const headMeta = basic
 		};
 	});
 
-export type Props = {
+export type HeadMetaProps = z.input<typeof headMeta>;
+
+export type Props = HeadMetaProps & {
+	/** Will be added to the `<body>` element. */
 	class?: string;
-	meta: z.input<typeof headMeta>;
 };
-const parsed = headMeta.safeParse(Astro.props.meta);
+
+const { class: className, ...meta } = Astro.props;
+const parsed = headMeta.safeParse(meta);
 
 if (!parsed.success || !parsed.data)
 	console.error(`Invalid head meta props for ${Astro.url.pathname}\n${parsed.error}`);
