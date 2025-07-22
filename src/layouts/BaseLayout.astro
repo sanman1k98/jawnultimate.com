@@ -81,7 +81,7 @@ const { class: className, ...meta } = Astro.props;
 const parsed = headMeta.safeParse(meta);
 
 if (!parsed.success || !parsed.data)
-	console.error(`Invalid head meta props for ${Astro.url.pathname}\n${parsed.error}`);
+	console.error(`Invalid head meta props for %s: %o`, Astro.url.pathname, parsed.error.issues);
 
 const { title, description, locale } = parsed.data ?? {};
 ---
