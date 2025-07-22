@@ -1,0 +1,31 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import MainLayout from '@/layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+export const getStaticPaths = (async () => {
+	const rosters = await getCollection('rosters');
+	return rosters.map((roster) => ({
+		params: { roster: roster.id },
+		props: { roster },
+	}));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { title, players } = Astro.props.roster.data;
+---
+
+<MainLayout title={title} description="">
+	<h1>{title}</h1>
+	<ul>
+		{
+			players.map((player) => (
+				<li>
+					<span>{player.number}</span>
+					<span>{player.name}</span>
+				</li>
+			))
+		}
+	</ul>
+</MainLayout>
