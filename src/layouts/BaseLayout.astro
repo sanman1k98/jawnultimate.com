@@ -102,7 +102,7 @@ const { title, description, locale } = parsed.data ?? {};
 		<title>{title}</title>
 		<slot name="head" />
 	</head>
-	<body class="flex min-h-screen flex-col">
+	<body class:list={[className]}>
 		<slot />
 	</body>
 </html>

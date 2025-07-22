@@ -11,10 +11,10 @@ type Props = HeadMetaProps & {
 const { class: className, ...meta } = Astro.props;
 ---
 
-<BaseLayout {...meta}>
+<BaseLayout class="flex min-h-screen flex-col" {...meta}>
 	<slot name="head" slot="head" />
 	<Header />
-	<main class="grow">
+	<main class:list={['grow', className]}>
 		<slot />
 	</main>
 	<Footer />
