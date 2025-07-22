@@ -59,7 +59,7 @@ const headMeta = basic
 		const { og, twitter, ...basic } = data;
 		return {
 			...basic,
-			title: `${basic.title} | ${SITE_NAME}`,
+			title: [basic.title, SITE_NAME].filter(Boolean).join(' | '),
 			twitter,
 			og: {
 				...og,
