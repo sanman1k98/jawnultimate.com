@@ -12,7 +12,11 @@ const { class: className, ...meta } = Astro.props;
 ---
 
 <BaseLayout class="flex min-h-screen flex-col" {...meta}>
-	<slot name="head" slot="head" />
+	<Fragment slot="head">
+		{/* Tailwind color-emerald-700 */}
+		<meta name="theme-color" content="oklch(0.508 0.118 165.612)" />
+		<slot name="head" />
+	</Fragment>
 	<Header />
 	<main class:list={['grow', className]}>
 		<slot />
