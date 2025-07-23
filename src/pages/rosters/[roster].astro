@@ -17,11 +17,11 @@ const { title, players } = Astro.props.roster.data;
 ---
 
 <MainLayout title={title} description="">
-	   <h1 class="text-center text-4xl font-bold text-emerald-600 uppercase font-stretch-semi-expanded">{title}</h1> 
-		<ul class="text-left text-2xl font-semibold text-emerald-950 container mx-auto px-10">
+	<h1 class="text-center text-4xl font-bold text-emerald-600 uppercase font-stretch-semi-expanded">{title}</h1>
+	<ul class="container mx-auto px-10 text-left text-2xl font-semibold text-emerald-950">
 		{
 			players.map((player) => (
-				<li class:list={{ 'font-extrabold': player.captain}}>
+				<li class:list={{ 'font-extrabold': player.captain }}>
 					<span>{player.number}</span>
 					<span>{player.name}</span>
 					{player.captain && <span>-C</span>}
