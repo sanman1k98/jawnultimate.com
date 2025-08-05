@@ -16,6 +16,8 @@ const basic = z.object({
 	locale: z.string().default(DEFAULTS.LANG),
 	/** Text to display in the browser tab. */
 	title: z.string(),
+	/** Use to set the `<title>` text manually. */
+	rawTitle: z.string().optional(),
 	/** A description for creating a bookmark for the page. */
 	description: z.string(),
 	author: z.string().optional(),
@@ -59,7 +61,7 @@ const headMeta = basic
 		const { og, twitter, ...basic } = data;
 		return {
 			...basic,
-			title: [basic.title, SITE_NAME].filter(Boolean).join(' | '),
+			title: basic.rawTitle ?? [basic.title, SITE_NAME].filter(Boolean).join(' | '),
 			twitter,
 			og: {
 				...og,
