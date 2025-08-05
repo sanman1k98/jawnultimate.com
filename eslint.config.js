@@ -12,10 +12,6 @@ export default antfu({
 				'1tbs',
 				{ allowSingleLine: true },
 			],
-			'style/newline-per-chained-call': [
-				'error',
-				{ ignoreChainWithDepth: 2 },
-			],
 		},
 	},
 	formatters: {
