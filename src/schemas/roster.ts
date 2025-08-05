@@ -12,4 +12,4 @@ const PlayerSchema = z.object({
 export const RosterSchema = z.object({
 	title: z.string(),
 	players: PlayerSchema.array(),
-})
+});
