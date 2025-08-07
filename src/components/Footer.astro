@@ -57,16 +57,35 @@ const groups: LinkGroup[] = [
 ];
 ---
 
-<footer class:list={['mb-16 text-emerald-800', Astro.props.class]}>
-	<ul class="mx-auto flex justify-center gap-x-4 p-4">
-		<li>
-			<a href="https://www.instagram.com/jawn_ultimate/">InstaJAWN</a>
-		</li>
-		<li>
-			<a href="https://x.com/JAWN_Ultimate">TwitterJAWN</a>
-		</li>
-	</ul>
-	<div class="text-center">
-		<span>JAWN est. 2017</span>
+<footer
+	style="padding-inline: env(safe-area-inset-left) env(safe-area-inset-right)"
+	class:list={['font-overpass w-full bg-emerald-600 pt-8 pb-12 text-white', Astro.props.class]}
+>
+	<div class="mx-auto max-w-3xl px-4">
+		<h2 class="mb-4 text-3xl font-bold">Show some love...</h2>
+		<div class="flex flex-wrap gap-y-4 md:justify-between">
+			{
+				groups.map(({ title, subtitle, links }) => (
+					<section class="basis-42">
+						<hgroup class="flex max-w-min items-baseline gap-x-2 border-b-2 border-white/30 text-nowrap">
+							<h3 class="font-extrabold">{title}</h3>
+							{subtitle && <p class="text-sm font-medium text-white/85">{subtitle}</p>}
+						</hgroup>
+						<ul class="mt-1">
+							{links.map(({ text, href }) => (
+								<li class="text-white/95">
+									<a class="" href={href}>
+										{text}
+									</a>
+								</li>
+							))}
+						</ul>
+					</section>
+				))
+			}
+		</div>
+	</div>
+	<div class="mt-8 text-center font-bold">
+		<span>Jawn est. 2017</span>
 	</div>
 </footer>
