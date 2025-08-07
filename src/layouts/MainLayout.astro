@@ -18,7 +18,10 @@ const { class: className, ...meta } = Astro.props;
 		<slot name="head" />
 	</Fragment>
 	<Header />
-	<main class:list={['grow', className]}>
+	<main
+		style="padding-inline: env(safe-area-inset-left) env(safe-area-inset-right)"
+		class:list={['grow', className]}
+	>
 		<slot />
 	</main>
 	<Footer />
