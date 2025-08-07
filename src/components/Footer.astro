@@ -2,6 +2,59 @@
 type Props = {
 	class?: string;
 };
+
+type Link = {
+	text: string;
+	href: string;
+};
+
+type LinkGroup = {
+	title: string;
+	subtitle?: string;
+	links: Link[];
+};
+
+// TODO: figure out a nice way to put this in the footer.
+const groups: LinkGroup[] = [
+	{
+		title: 'Jawn',
+		subtitle: 'Summer Club',
+		links: [
+			{
+				text: 'Instagram',
+				href: 'https://www.instagram.com/jawn_ultimate/',
+			},
+			{
+				text: 'Twitter',
+				href: 'https://x.com/JAWN_Ultimate',
+			},
+		],
+	},
+	{
+		title: 'Alert',
+		subtitle: "Temple Men's Team",
+		links: [
+			{
+				text: 'Instagram',
+				href: 'https://www.instagram.com/templeultimatem/',
+			},
+		],
+	},
+	{
+		title: 'TUF',
+		subtitle: "Temple Women's Team",
+		links: [
+			{
+				text: 'Instagram',
+				href: 'https://www.instagram.com/templeultimatew/',
+			},
+			{
+				text: 'Twitter',
+				href: 'https://x.com/templeultimatew',
+			},
+		],
+	},
+];
 ---
 
 <footer class:list={['mb-16 text-emerald-800', Astro.props.class]}>
