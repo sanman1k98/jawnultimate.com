@@ -20,10 +20,7 @@ const { class: className, ...meta } = Astro.props;
 	<div class="w-full bg-white">
 		<Header />
 	</div>
-	<main
-		style="padding-inline: env(safe-area-inset-left) env(safe-area-inset-right)"
-		class:list={['grow bg-white', className]}
-	>
+	<main class:list={['px-safe-area grow bg-white', className]}>
 		<slot />
 	</main>
 	<Footer />
