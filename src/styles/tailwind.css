@@ -3,3 +3,49 @@
 @theme {
 	--font-overpass: 'Overpass', overpass-fallback, system-ui, sans-serif;
 }
+
+/**
+ * `*-safe-area` utilities are for designing for devices with rounded displays,
+ * notches, or hole-punches.
+ *
+ * @see https://webkit.org/blog/7929/designing-websites-for-iphone-x/ 
+ */
+
+@utility px-safe-area {
+	padding-left: env(safe-area-inset-left);
+	padding-right: env(safe-area-inset-right);
+}
+
+@utility pl-safe-area {
+	padding-left: env(safe-area-inset-left);
+}
+
+@utility pr-safe-area {
+	padding-right: env(safe-area-inset-right);
+}
+
+@utility mx-safe-area {
+	margin-left: env(safe-area-inset-left);
+	margin-right: env(safe-area-inset-right);
+}
+
+@utility -mx-safe-area {
+	margin-left: calc(env(safe-area-inset-left) * -1);
+	margin-right: calc(env(safe-area-inset-right) * -1);
+}
+
+@utility ml-safe-area {
+	margin-left: env(safe-area-inset-left);
+}
+
+@utility -ml-safe-area {
+	margin-left: calc(env(safe-area-inset-left) * -1);
+}
+
+@utility mr-safe-area {
+	margin-right: env(safe-area-inset-right);
+}
+
+@utility -mr-safe-area {
+	margin-right: calc(env(safe-area-inset-right) * -1);
+}
