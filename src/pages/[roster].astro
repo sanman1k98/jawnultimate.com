@@ -16,15 +16,23 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { title, players } = Astro.props.roster.data;
 ---
 
-<MainLayout title={title} description="">
-	<h1 class="text-center text-4xl font-bold text-emerald-600 uppercase font-stretch-semi-expanded">{title}</h1>
-	<ul class="container mx-auto px-10 text-left text-2xl font-semibold text-emerald-950">
+<MainLayout {title} description="" class="font-overpass mx-auto text-slate-800">
+	<h1 class="pt-12 pb-6 text-center text-3xl font-bold sm:pb-8 sm:text-4xl">{title}</h1>
+	<ul class="mx-auto max-w-lg ps-16 pb-16 text-lg font-medium sm:columns-2 sm:ps-12 sm:text-xl">
 		{
 			players.map((player) => (
-				<li class:list={{ 'font-extrabold': player.captain }}>
-					<span>{player.number}</span>
-					<span>{player.name}</span>
-					{player.captain && <span>-C</span>}
+				<li
+					class:list={[
+						'items-top flex gap-x-2 text-nowrap',
+						player.captain && 'font-bold text-emerald-950',
+					]}
+				>
+					<span class="w-[2ch] text-right font-[Seravek] text-base font-normal text-slate-600 oldstyle-nums tabular-nums sm:text-lg">
+						{player.number}
+					</span>
+					<span class:list={[player.captain && 'underline decoration-3 underline-offset-4']}>
+						{player.name}
+					</span>
 				</li>
 			))
 		}
