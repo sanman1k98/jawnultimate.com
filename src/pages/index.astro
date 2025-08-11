@@ -1,5 +1,8 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+const rosters = await getCollection('rosters');
 ---
 
 <MainLayout
@@ -20,7 +23,29 @@ import MainLayout from '@/layouts/MainLayout.astro';
 			> students.
 		</p>
 	</section>
-	<section class="h-96 w-full">
+	<section
+		class="font-overpass mx-auto w-4/5 border-t-2 border-slate-400 px-4 py-16 text-slate-800"
+	>
+		<h2 class="text-center text-2xl font-bold tracking-tight sm:text-4xl">
+			Check out who's playing
+		</h2>
+		<ul class="mx-auto flex flex-col items-center justify-center py-12 text-center">
+			{
+				rosters.map((roster) => (
+					<li>
+						<a
+							class="flex max-w-fit gap-x-2 rounded-lg bg-emerald-600 p-3 px-4 text-lg font-bold text-white shadow shadow-emerald-500"
+							href={`/rosters/${roster.id}`}
+						>
+							<span>{roster.data.title}</span>
+							<span class="scale-150">&rarr;</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+	<section class="w-full">
 		<!-- TODO: what is a "jawn"? -->
 	</section>
 </MainLayout>
