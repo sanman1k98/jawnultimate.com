@@ -13,15 +13,11 @@ type Props = {
 };
 ---
 
-<div class="relative">
-	<div class="absolute inset-x-0 bottom-0 mx-auto h-[4rem] w-[18rem] bg-emerald-700/50 blur-lg">
-	</div>
+<div class:list={['relative mx-auto max-w-min', Astro.props.class]}>
+	<div class="absolute inset-x-0 bottom-0 h-[4rem] w-[18rem] bg-emerald-700/50 blur-lg"></div>
 	<header
 		style="--metro-street-sign-mask: linear-gradient(-33deg, black 87%, transparent 87%), linear-gradient(33deg, black 87%, transparent 87%)"
-		class:list={[
-			'font-overpass mx-auto aspect-3/1 w-[18rem] overflow-hidden rounded-b-lg bg-emerald-600 mask-(--metro-street-sign-mask) mask-intersect',
-			Astro.props.class,
-		]}
+		class="font-overpass aspect-3/1 w-[18rem] overflow-hidden rounded-b-lg bg-emerald-600 mask-(--metro-street-sign-mask) mask-intersect"
 	>
 		<ul
 			aria-hidden="true"

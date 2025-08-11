@@ -11,14 +11,14 @@ type Props = HeadMetaProps & {
 const { class: className, ...meta } = Astro.props;
 ---
 
-<BaseLayout class="flex min-h-screen flex-col bg-emerald-600" {...meta}>
+<BaseLayout class="min-h-screen bg-emerald-600" {...meta}>
 	<Fragment slot="head">
 		{/* Tailwind color-emerald-600 */}
 		<meta name="theme-color" content="oklch(0.596 0.145 163.225)" />
 		<slot name="head" />
 	</Fragment>
-	<div class="grow bg-white shadow-xl shadow-emerald-700">
-		<Header class="mt-6 sm:mt-8" />
+	<div class="bg-white shadow-xl shadow-emerald-700 max-sm:min-h-screen">
+		<Header class="pt-6 sm:pt-8" />
 		<main class:list={['px-safe-area', className]}>
 			<slot />
 		</main>
