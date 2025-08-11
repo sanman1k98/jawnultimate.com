@@ -11,5 +11,7 @@ const PlayerSchema = z.object({
 
 export const RosterSchema = z.object({
 	title: z.string(),
+	description: z.string().optional(),
+	date: z.coerce.date(),
 	players: PlayerSchema.array(),
 });
