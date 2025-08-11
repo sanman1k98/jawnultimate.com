@@ -98,7 +98,14 @@ const { title, description, locale } = parsed.data! ?? {};
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
+
 		<slot name="head" />
+
+		<style>
+			@view-transition {
+				navigation: auto;
+			}
+		</style>
 	</head>
 	<body class:list={[className]}>
 		<slot />
