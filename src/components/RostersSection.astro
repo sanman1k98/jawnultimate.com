@@ -1,0 +1,44 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+type Roster = CollectionEntry<'rosters'>;
+
+const rosters = await getCollection('rosters');
+// Sort by reverse chronological order.
+rosters.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf()).reverse();
+
+let latestRosters: Roster[], oldRosters: Roster[];
+
+if (rosters.length) {
+	const latestYear = rosters[0].data.date.getFullYear();
+	((latestRosters = []), (oldRosters = []));
+	for (const roster of rosters) {
+		if (roster.data.date.getFullYear() === latestYear) latestRosters.push(roster);
+		else oldRosters.push(roster);
+	}
+} else {
+	latestRosters = rosters;
+	oldRosters = [];
+}
+
+type Props = { class?: string };
+---
+
+<section class:list={['mx-auto font-overpass text-slate-800', Astro.props.class]}>
+	<h2 class="text-center text-2xl font-bold tracking-tight sm:text-4xl">Check out who's playing</h2>
+	<ul class="mx-auto flex flex-col items-center justify-center gap-4 py-12 text-center sm:gap-6">
+		{
+			latestRosters.map((roster) => (
+				<li>
+					<a
+						class="flex max-w-fit gap-x-2 rounded-lg bg-emerald-600 p-3 px-4 text-lg font-bold text-white shadow shadow-emerald-500"
+						href={`/${roster.id}`}
+					>
+						<span>{roster.data.title}</span>
+						<span class="scale-150">&rarr;</span>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</section>

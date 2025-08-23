@@ -1,50 +1,21 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import { getCollection } from 'astro:content';
-
-const rosters = await getCollection('rosters');
+import RostersSection from '@/components/RostersSection.astro';
 ---
 
 <MainLayout
 	title="Home"
 	description="Jawn is a Philadelphia-based, mixed-division, ultimate frisbee team of incoming, current, and former Temple University students. See who's playing on the team by checking out the official rosters."
 >
-	<section
-		class="mx-auto flex flex-col items-center justify-center px-4 py-16 font-overpass text-slate-800 sm:py-24"
-	>
-		<h1
-			class="mb-4 max-w-144 text-center text-4xl font-bold tracking-tight text-slate-950 sm:text-6xl"
-		>
+	<section class="mx-auto flex flex-col items-center justify-center px-4 py-16 font-overpass text-slate-800 sm:py-24">
+		<h1 class="mb-4 max-w-144 text-center text-4xl font-bold tracking-tight text-slate-950 sm:text-6xl">
 			A Philly frisbee team
 		</h1>
 		<p class="max-w-108 text-center text-base text-balance sm:text-xl">
-			Jawn is a mixed-division club team of incoming, current, and former <strong
-				>Temple University</strong
-			> students.
+			Jawn is a mixed-division club team of incoming, current, and former <strong>Temple University</strong> students.
 		</p>
 	</section>
-	<section
-		class="mx-auto w-4/5 border-t-2 border-slate-400 px-4 py-16 font-overpass text-slate-800"
-	>
-		<h2 class="text-center text-2xl font-bold tracking-tight sm:text-4xl">
-			Check out who's playing
-		</h2>
-		<ul class="mx-auto flex flex-col items-center justify-center py-12 text-center">
-			{
-				rosters.map((roster) => (
-					<li>
-						<a
-							class="flex max-w-fit gap-x-2 rounded-lg bg-emerald-600 p-3 px-4 text-lg font-bold text-white shadow shadow-emerald-500"
-							href={`/${roster.id}`}
-						>
-							<span>{roster.data.title}</span>
-							<span class="scale-150">&rarr;</span>
-						</a>
-					</li>
-				))
-			}
-		</ul>
-	</section>
+	<RostersSection class="w-4/5 border-t-2 border-slate-400 px-4 py-16" />
 	<section class="w-full">
 		<!-- TODO: what is a "jawn"? -->
 	</section>
