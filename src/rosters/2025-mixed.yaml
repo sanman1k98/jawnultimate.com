@@ -9,6 +9,9 @@ players:
     number: 2
   - name: Jeremy
     number: 3
+  - name: Barczak
+    number: 4
+    captain: true
   - name: Jackie
     number: 5
   - name: Kye
@@ -62,9 +65,6 @@ players:
     number: 45
   - name: Max Blacklock
     number: 56
-  - name: Barczak
-    number: 57
-    captain: true
   - name: Will Shutt
     number: 62
   - name: Faron
