@@ -4,7 +4,7 @@ import { RosterSchema } from './schemas/roster';
 
 const rosters = defineCollection({
 	loader: glob({
-		pattern: '**/*.yaml',
+		pattern: '**/[^_]*.yaml',
 		base: './src/rosters',
 	}),
 	schema: RosterSchema,
