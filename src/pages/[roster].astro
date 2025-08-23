@@ -30,7 +30,7 @@ players.sort((a, b) => {
 		{
 			players.map((player) => (
 				<li class:list={['items-top flex gap-x-2 text-nowrap', player.captain && 'font-bold text-emerald-950']}>
-					<span class="w-[2ch] text-right font-[Seravek] text-base font-normal text-slate-600 oldstyle-nums tabular-nums sm:text-lg">
+					<span class="w-[2ch] text-right font-humanist text-base font-normal text-slate-600 oldstyle-nums tabular-nums sm:text-lg">
 						{player.number}
 					</span>
 					<span class:list={[player.captain && 'underline decoration-3 underline-offset-4']}>{player.name}</span>
