@@ -8,7 +8,7 @@
  * `*-safe-area` utilities are for designing for devices with rounded displays,
  * notches, or hole-punches.
  *
- * @see https://webkit.org/blog/7929/designing-websites-for-iphone-x/ 
+ * @see https://webkit.org/blog/7929/designing-websites-for-iphone-x/
  */
 
 @utility px-safe-area {
