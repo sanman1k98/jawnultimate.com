@@ -10,6 +10,7 @@ export default {
 		'prettier-plugin-astro',
 		'prettier-plugin-tailwindcss',
 	],
+	tailwindStylesheet: './src/styles/tailwind.css',
 	overrides: [
 		{
 			files: ['.*', '*.md', '*.toml', '*.yml'],

@@ -19,7 +19,7 @@ export default antfu({
 		html: true,
 		css: true,
 		prettierOptions: {
-			tailwindStylesheet: './src/styles/global.css',
+			tailwindStylesheet: './src/styles/tailwind.css',
 			plugins: [
 				'prettier-plugin-tailwindcss',
 			],
