@@ -23,7 +23,9 @@ players.sort((a, b) => {
 ---
 
 <MainLayout {title} description="" class="mx-auto font-overpass text-slate-800">
-	<h1 class="pt-12 pb-6 text-center text-3xl font-bold sm:pb-8 sm:text-4xl">{title}</h1>
+	<h1 class="pt-12 pb-6 text-center text-3xl font-bold sm:pb-8 sm:text-4xl">
+		{title}
+	</h1>
 	<ul class="mx-auto max-w-lg ps-16 pb-16 text-lg font-medium sm:columns-2 sm:ps-12 sm:text-xl">
 		{
 			players.map((player) => (
