@@ -14,6 +14,12 @@ export const getStaticPaths = (async () => {
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { title, players } = Astro.props.roster.data;
+
+players.sort((a, b) => {
+	const aNum = Number.parseInt(a.number as string);
+	const bNum = Number.parseInt(b.number as string);
+	return aNum - bNum;
+});
 ---
 
 <MainLayout {title} description="" class="mx-auto font-overpass text-slate-800">
