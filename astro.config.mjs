@@ -13,8 +13,8 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 	},
 	experimental: {
-		// The following will be the new defaults in Astro 6.
-		preserveScriptOrder: true,
-		headingIdCompat: true,
+		preserveScriptOrder: true, // default in Astro 6
+		headingIdCompat: true, // default in Astro 6
+		staticImportMetaEnv: true, // default in Astro 6
 	},
 });
