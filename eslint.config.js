@@ -1,6 +1,7 @@
 import antfu from '@antfu/eslint-config';
 
 export default antfu({
+	astro: true,
 	typescript: true,
 	stylistic: {
 		indent: 'tab',
@@ -19,11 +20,11 @@ export default antfu({
 		html: true,
 		css: true,
 		prettierOptions: {
+			astroAllowShorthand: true,
 			tailwindStylesheet: './src/styles/tailwind.css',
 			plugins: [
 				'prettier-plugin-tailwindcss',
 			],
 		},
 	},
-	astro: true,
 });

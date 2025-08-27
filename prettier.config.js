@@ -1,30 +1,14 @@
-/** @type {import("prettier").Config} */
+// HACK: empty config file for `prettier-plugin-tailwindcss` to work.
+//
+// For some reason, the `prettier-plugin-tailwindcss` plugin will not work if
+// when integrating Prettier with ESLint if there is no Prettier config file.
+// It should be able to resolve the path to 'tailwindStylesheet' by using
+// `process.cwd()` but instead of using the path to the Prettier config file,
+// but it just silently fails and fallsback to the builtin CSS formatting.
+//
+// To be fair, they do recommend *not* to integrate linters with formatters and
+// *not* to use linters for formatting, but I really like this ESLint preset.
+
 export default {
-	semi: true,
-	singleQuote: true,
-	tabWidth: 2,
-	trailingComma: 'all',
-	useTabs: true,
-	plugins: [
-		'prettier-plugin-astro',
-		'prettier-plugin-tailwindcss',
-	],
-	tailwindStylesheet: './src/styles/tailwind.css',
-	overrides: [
-		{
-			files: ['.*', '*.md', '*.toml', '*.yml'],
-			options: {
-				useTabs: false,
-			},
-		},
-		{
-			files: ['**/*.astro'],
-			options: {
-				// Use ESLint to lint and format frontmatter.
-				astroSkipFrontmatter: true,
-				astroAllowShorthand: true,
-				parser: 'astro',
-			},
-		},
-	],
+	// Use ESLint to format.
 };
