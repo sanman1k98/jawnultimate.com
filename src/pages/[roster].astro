@@ -16,8 +16,9 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { title, players } = Astro.props.roster.data;
 
 players.sort((a, b) => {
-	const aNum = Number.parseInt(a.number as string);
-	const bNum = Number.parseInt(b.number as string);
+	// Coerce to numbers.
+	const aNum = +a.number;
+	const bNum = +b.number;
 	return aNum - bNum;
 });
 ---
