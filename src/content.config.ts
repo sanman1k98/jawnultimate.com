@@ -3,11 +3,11 @@ import { defineCollection } from 'astro:content';
 import { RosterSchema } from './schemas/roster';
 
 const rosters = defineCollection({
+	schema: RosterSchema,
 	loader: glob({
 		pattern: '**/[^_]*.yaml',
-		base: './src/rosters',
+		base: './rosters',
 	}),
-	schema: RosterSchema,
 });
 
 export const collections = { rosters };
