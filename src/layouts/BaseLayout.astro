@@ -100,6 +100,9 @@ const { title, description, locale } = parsed.data! ?? {};
 
 		<slot name="head" />
 
+		{/* Generated with `@astrojs/sitemap` integration. */}
+		<link rel="sitemap" href="/sitemap-index.xml" />
+
 		<style>
 			@view-transition {
 				navigation: auto;
