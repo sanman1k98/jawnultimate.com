@@ -38,13 +38,25 @@ const PlayerSchema = z.object({
 const PlayerListSchema = PlayerSchema.array().superRefine((players, ctx) => {
 	/** Jersey number to player names. */
 	const reverseLookup = new Map<number | string, string[]>();
+	/** Number of occurrences for each name in the roster. */
+	const nameOccurs = new Map<string, number>();
 
 	for (const { name, number } of players) {
-		const key = Number(number);
+		nameOccurs.set(name, (nameOccurs.get(name) ?? 0) + 1);
 		if (!reverseLookup.has(number))
 			reverseLookup.set(number, [name]);
 		else
 			reverseLookup.get(number)!.push(name);
+	}
+
+	// Issues for duplicate names.
+	for (const [name, occurrences] of nameOccurs.entries()) {
+		if (occurrences > 1) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: `Player names must be unique: ${occurrences} players have the same name "${name}"`,
+			});
+		}
 	}
 
 	// Issues for duplicate jersey numbers.
