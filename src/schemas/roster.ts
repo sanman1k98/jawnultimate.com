@@ -36,21 +36,23 @@ const PlayerSchema = z.object({
 });
 
 const PlayerListSchema = PlayerSchema.array().superRefine((players, ctx) => {
-	const reverseLookup = new Map<number, string[]>();
+	/** Jersey number to player names. */
+	const reverseLookup = new Map<number | string, string[]>();
 
 	for (const { name, number } of players) {
 		const key = Number(number);
-		if (!reverseLookup.has(key))
-			reverseLookup.set(key, [name]);
+		if (!reverseLookup.has(number))
+			reverseLookup.set(number, [name]);
 		else
-			reverseLookup.get(key)!.push(name);
+			reverseLookup.get(number)!.push(name);
 	}
 
+	// Issues for duplicate jersey numbers.
 	for (const [number, names] of reverseLookup.entries()) {
 		if (names.length > 1) {
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
-				message: `Duplicate jersey number: ${names.join(', ')} have the same jersey number ${number}`,
+				message: `Jersey numbers must be unique: ${names.join(', ')} have the same number "${number}"`,
 			});
 		}
 	}
