@@ -1,14 +1,12 @@
-# https://EditorConfig.org
+# https://editorconfig.org
 
-# top-most EditorConfig file
 root = true
 
+# Keep in sync with ESLint config.
+
 [*]
-charset = utf-8
-end_of_line = lf
 indent_size = 2
 indent_style = tab
-insert_final_newline = true
 
-[{.*,*.md,*.json,*.toml,*.yml,*.yaml,*.json5}]
+[{*.md,*.toml,*.yml,*.yaml}]
 indent_style = space
