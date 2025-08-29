@@ -1,11 +1,18 @@
 /** @jsxRuntime automatic */
 /** @jsxImportSource #satori/jsx */
 import type { Props, SVGRenderOptions } from './shared';
-import { fonts } from './shared';
+import {
+	COLOR_EMERALD_600_HEX,
+	COLOR_YELLOW_600_HEX,
+	fonts,
+} from './shared';
 
 const WIDTH = 1920;
 const HEIGHT = WIDTH / 2;
 
+/**
+ * Root element with a subtle radial gradient.
+ */
 function Background(props: Props) {
 	return (
 		<div
@@ -24,26 +31,32 @@ function Background(props: Props) {
 	);
 }
 
+/**
+ * Metro sign shape with green background.
+ */
 function MetroSign(props: Props) {
+	// BUG: Satori v0.16.2: clip path only works on square shaped elements.
 	const signWidth = 1200;
 	const signHeight = signWidth / 3;
 
-	// BUG: Satori's clip path only works on square shaped elements.
+	// HACK: use two clip paths for the left and right side of the metro sign.
 	const leftShape = 'polygon(60% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 40%)';
 	const rightShape = 'polygon(0% 0%, 40% 0%, 100% 40%, 100% 100%, 0% 100%)';
 
-	// The metro sign has a 3:1 aspect ratio so we need three squares.
+	// We are are emulating a 36"x12" Philadephia metro sign, so we can use 3 square elements.
 	const squareStyles = {
 		height: signHeight,
 		width: signHeight,
 		position: 'absolute',
-		backgroundColor: '#059669',
+		backgroundColor: COLOR_EMERALD_600_HEX,
 	} as const;
 
 	return (
 		<div
 			style={{
+				// TODO: set clipPath and backgroundColor on this when bug is fixed.
 				display: 'flex',
+				position: 'relative', // Default in Satori.
 				width: signWidth,
 				height: signHeight,
 				flexDirection: 'column',
@@ -51,14 +64,19 @@ function MetroSign(props: Props) {
 				alignItems: 'center',
 			}}
 		>
+			{/* Position the squares next to each other create the whole metro sign shape. */}
 			<div style={{ ...squareStyles, left: 0, clipPath: leftShape, borderBottomLeftRadius: '2rem' }} />
 			<div style={{ ...squareStyles, left: signHeight }} />
 			<div style={{ ...squareStyles, right: 0, clipPath: rightShape, borderBottomRightRadius: '2rem' }} />
+			{/* Children will stack on top of the squares. */}
 			{props.children}
 		</div>
 	);
 }
 
+/**
+ * Metro sign block numbers (1700-1800) with the cardinal direction ("N") between.
+ */
 function BlockNumbers() {
 	return (
 		<div
@@ -72,14 +90,17 @@ function BlockNumbers() {
 		>
 			<span style={{ transform: 'scale(1.5)' }}>&larr;</span>
 			<span>1700</span>
-			<span style={{ fontSize: '6rem', color: '#facc15' }}>N</span>
+			<span style={{ fontSize: '6rem', color: COLOR_YELLOW_600_HEX }}>N</span>
 			<span>1800</span>
 			<span style={{ transform: 'scale(1.5)' }}>&rarr;</span>
 		</div>
 	);
 }
 
-function StreetName(props: Props) {
+/**
+ * Metro sign street name ("JAWN").
+ */
+function StreetName() {
 	return (
 		<span
 			style={{
@@ -88,18 +109,20 @@ function StreetName(props: Props) {
 				fontWeight: 'bold',
 				fontSize: '16rem',
 				lineHeight: 0.75,
-				// letterSpacing: '-0.05em',
 				color: 'white',
 				paddingTop: '2rem',
 				paddingBottom: '2rem',
 			}}
 		>
-			{props.children}
+			JAWN
 		</span>
 	);
 }
 
-function Subtitle(props: Props) {
+/**
+ * Title text to be shown under the metro sign.
+ */
+function Title(props: Props) {
 	return (
 		<span
 			style={{
@@ -122,11 +145,11 @@ export function SocialCard() {
 		<Background>
 			<MetroSign>
 				<BlockNumbers />
-				<StreetName>JAWN</StreetName>
+				<StreetName />
 			</MetroSign>
-			<Subtitle>
+			<Title>
 				A Philly frisbee team
-			</Subtitle>
+			</Title>
 		</Background>
 	);
 }
