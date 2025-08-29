@@ -31,11 +31,11 @@ players.sort((a, b) => {
 	<ul class="mx-auto max-w-lg ps-16 pb-16 text-lg font-medium sm:columns-2 sm:ps-12 sm:text-xl">
 		{
 			players.map((player) => (
-				<li class:list={['items-top flex gap-x-2 text-nowrap', player.captain && 'font-bold text-emerald-950']}>
+				<li class="items-top flex gap-x-2 text-nowrap">
 					<span class="w-[2ch] text-right font-humanist text-base font-normal text-slate-600 oldstyle-nums tabular-nums sm:text-lg">
 						{player.number}
 					</span>
-					<span class:list={[player.captain && 'underline decoration-3 underline-offset-4']}>{player.name}</span>
+					<span class:list={[player.captain && 'font-bold text-slate-950 underline']}>{player.name}</span>
 					{player.captain && <span class="sr-only">(captain)</span>}
 				</li>
 			))
