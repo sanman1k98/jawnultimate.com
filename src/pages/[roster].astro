@@ -36,6 +36,7 @@ players.sort((a, b) => {
 						{player.number}
 					</span>
 					<span class:list={[player.captain && 'underline decoration-3 underline-offset-4']}>{player.name}</span>
+					{player.captain && <span class="sr-only">(captain)</span>}
 				</li>
 			))
 		}
