@@ -14,7 +14,6 @@ type LinkGroup = {
 	links: Link[];
 };
 
-// TODO: figure out a nice way to put this in the footer.
 const groups: LinkGroup[] = [
 	{
 		title: 'Jawn',
@@ -65,7 +64,7 @@ const groups: LinkGroup[] = [
 				groups.map(({ title, subtitle, links }) => (
 					<section class="basis-42">
 						<hgroup class="flex max-w-min items-baseline gap-x-2 border-b-2 border-white/30 text-nowrap">
-							<h3 class="font-extrabold">{title}</h3>
+							<h3 class="font-bold">{title}</h3>
 							{subtitle && <p class="text-sm font-medium text-white/85">{subtitle}</p>}
 						</hgroup>
 						<ul class="mt-1">
@@ -81,8 +80,11 @@ const groups: LinkGroup[] = [
 				))
 			}
 		</div>
-	</div>
-	<div class="mt-8 text-center font-bold">
-		<span>Jawn est. 2017</span>
+		<div class="mt-12 flex justify-between border-t-2 border-white/30 py-6">
+			<span>Copyright &copy; {new Date().getFullYear()} Jawn</span>
+			<a title="Source code for this website" href="https://github.com/sanman1k98/jawnultimate.com" target="_blank">
+				<span class="underline any-pointer-fine:hover:text-slate-300">Source code</span>
+			</a>
+		</div>
 	</div>
 </footer>
