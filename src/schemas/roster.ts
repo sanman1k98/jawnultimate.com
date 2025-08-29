@@ -24,6 +24,8 @@ const RosterDateSchema = z.coerce.string().transform((arg, ctx) => {
 	}
 });
 
+const DivisionSchema = z.enum(['mixed', 'open']);
+
 const JerseyNumberSchema = z.union([
 	z.number().min(0).max(99).int(),
 	z.string().regex(/^\d{2}$/), // Handles cases like "00".
@@ -74,5 +76,6 @@ export const RosterSchema = z.object({
 	title: z.string(),
 	description: z.string().optional(),
 	date: RosterDateSchema,
+	division: DivisionSchema,
 	players: PlayerListSchema,
 });
