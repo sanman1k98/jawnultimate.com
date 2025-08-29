@@ -9,19 +9,19 @@ const RosterDateSchema = z.coerce.string().transform((arg, ctx) => {
 			code: z.ZodIssueCode.custom,
 			message: 'Must use form YYYY-MM',
 		});
+		return z.NEVER;
 	}
 
 	const date = new Date(arg);
-
 	if (Number.isNaN(date.valueOf())) {
 		ctx.addIssue({
 			code: z.ZodIssueCode.invalid_date,
-			message: 'Invalid date; must use form YYYY-MM',
+			message: 'Must use form YYYY-MM',
 		});
 		return z.NEVER;
-	} else {
-		return date;
 	}
+
+	return date;
 });
 
 const DivisionSchema = z.enum(['mixed', 'open']);
