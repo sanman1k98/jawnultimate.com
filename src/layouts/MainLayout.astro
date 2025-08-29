@@ -17,7 +17,7 @@ const { class: className, ...meta } = Astro.props;
 		<meta name="theme-color" content="oklch(0.596 0.145 163.225)" />
 		<slot name="head" />
 	</Fragment>
-	<div class="bg-white shadow-xl shadow-emerald-700 max-sm:min-h-screen">
+	<div class="bg-white shadow-xl shadow-emerald-700">
 		<Header class="pt-6 sm:pt-8" />
 		<main class:list={['px-safe-area', className]}>
 			<slot />
