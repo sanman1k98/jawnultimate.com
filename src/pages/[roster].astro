@@ -13,7 +13,8 @@ export const getStaticPaths = (async () => {
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
-const { title, players } = Astro.props.roster.data;
+const { date, division, players } = Astro.props.roster.data;
+const title = `${date.getFullYear()} ${division.charAt(0).toUpperCase().concat(division.slice(1))} Team`;
 
 players.sort((a, b) => {
 	// Coerce to numbers.
