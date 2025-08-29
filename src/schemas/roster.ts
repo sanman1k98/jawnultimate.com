@@ -73,8 +73,7 @@ const PlayerListSchema = PlayerSchema.array().superRefine((players, ctx) => {
 });
 
 export const RosterSchema = z.object({
-	title: z.string(),
-	description: z.string().optional(),
+	caption: z.string().optional(),
 	date: RosterDateSchema,
 	division: DivisionSchema,
 	players: PlayerListSchema,
