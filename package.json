@@ -9,8 +9,10 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
+		"deploy": "wrangler deploy",
 		"lint": "eslint .",
-		"astro": "astro"
+		"astro": "astro",
+		"wrangler": "wrangler"
 	},
 	"dependencies": {
 		"@astrojs/sitemap": "^3.5.1",
