@@ -33,7 +33,7 @@ const JerseyNumberSchema = z.union([
 
 const PlayerSchema = z.object({
 	name: z.string(),
-	number: JerseyNumberSchema,
+	number: JerseyNumberSchema.optional(),
 	captain: z.boolean().optional(),
 });
 
@@ -45,10 +45,12 @@ const PlayerListSchema = PlayerSchema.array().superRefine((players, ctx) => {
 
 	for (const { name, number } of players) {
 		nameOccurs.set(name, (nameOccurs.get(name) ?? 0) + 1);
-		if (!reverseLookup.has(number))
-			reverseLookup.set(number, [name]);
-		else
-			reverseLookup.get(number)!.push(name);
+		if (number !== undefined) {
+			if (!reverseLookup.has(number))
+				reverseLookup.set(number, [name]);
+			else
+				reverseLookup.get(number)!.push(name);
+		}
 	}
 
 	// Issues for duplicate names.
