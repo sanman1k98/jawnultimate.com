@@ -4,8 +4,18 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 type Roster = CollectionEntry<'rosters'>;
 
 const rosters = await getCollection('rosters');
-// Sort by reverse chronological order.
-rosters.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf()).reverse();
+
+// Sort by reverse chronological order and prioritize mixed rosters.
+rosters.sort(({ data: a }, { data: b }) => {
+	const [aDateValue, bDateValue] = [a.date.valueOf(), b.date.valueOf()];
+	if (aDateValue > bDateValue)
+		return -1; // `a` should come before `b`.
+	else if (aDateValue < bDateValue)
+		return 1; // `a` should come after `b`.
+	else if (aDateValue === bDateValue && a.division === 'mixed')
+		return -1; // Show mixed division rosters before open.
+	else return 0;
+});
 
 let latestRosters: Roster[], oldRosters: Roster[];
 
