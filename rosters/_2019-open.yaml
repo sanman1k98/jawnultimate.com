@@ -1,0 +1,41 @@
+date: 2019-09
+division: open
+players:
+  - name: Biscuit
+  - name: Sandeep
+  - name: White Boy
+    captain: true
+  - name: Mitchell Gaylord
+  - name: Craig Gerard
+  - name: Donny
+  - name: Matthew Kirk
+  - name: Klee
+  - name: Harvish
+  - name: Mikitsh
+  - name: Andrew Ngo
+  - name: Ashley Panicker
+  - name: Andrew Park
+  - name: Christian Sanchez
+  - name: Will Shutt
+  - name: Igor Smola
+  - name: Andrew Trinh
+  - name: Fisher
+  - name: Kevin Woodring
+  - name: Ka$sh
+  - name: Sam GW
+  - name: Maynard
+  - name: Adriene Khon
+  - name: Dylan Fritz
+  - name: Novak
+  - name: Paul Anouna
+  - name: Novacek
+  - name: Van
+  - name: Ed Brak
+  - name: Rob Walker
+    captain: true
+  - name: Matt Wilson
+  - name: Ryan Coughlan
+  - name: Mike Facinelli
+  - name: Eric Lu
+  - name: Heacock
+  - name: Jordan Clever
