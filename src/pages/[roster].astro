@@ -16,12 +16,14 @@ type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { date, division, players } = Astro.props.roster.data;
 const title = `${date.getFullYear()} ${division.charAt(0).toUpperCase().concat(division.slice(1))} Team`;
 
-players.sort((a, b) => {
-	// Coerce to numbers.
-	const aNum = +a.number;
-	const bNum = +b.number;
-	return aNum - bNum;
-});
+const showNumbers = players.every((player) => player.number !== undefined);
+
+if (showNumbers) {
+	players.sort((a, b) => +a.number! - +b.number!);
+} else {
+	const { compare } = new Intl.Collator('en-US');
+	players.sort((a, b) => compare(a.name, b.name));
+}
 ---
 
 <MainLayout {title} class="mx-auto font-overpass text-slate-800">
@@ -31,10 +33,12 @@ players.sort((a, b) => {
 	<ul class="mx-auto max-w-lg ps-16 pb-16 text-lg font-medium sm:columns-2 sm:ps-12 sm:text-xl">
 		{
 			players.map((player) => (
-				<li class="items-top flex gap-x-2 text-nowrap">
-					<span class="w-[2ch] text-right font-humanist text-base font-normal text-slate-600 oldstyle-nums tabular-nums sm:text-lg">
-						{player.number}
-					</span>
+				<li class="items-top mb-1 flex gap-x-2 text-nowrap sm:mb-2">
+					{showNumbers && (
+						<span class="w-[2ch] text-right font-humanist text-base font-normal text-slate-600 oldstyle-nums tabular-nums sm:text-lg">
+							{player.number}
+						</span>
+					)}
 					<span class:list={[player.captain && 'font-bold text-slate-950 underline']}>{player.name}</span>
 					{player.captain && <span class="sr-only">(captain)</span>}
 				</li>
