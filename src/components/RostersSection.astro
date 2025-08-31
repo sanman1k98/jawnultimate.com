@@ -17,18 +17,15 @@ rosters.sort(({ data: a }, { data: b }) => {
 	else return 0;
 });
 
-let latestRosters: Roster[], oldRosters: Roster[];
+const featuredRosters: Roster[] = [];
+const otherRosters: Roster[] = [];
 
 if (rosters.length) {
 	const latestYear = rosters[0].data.date.getFullYear();
-	((latestRosters = []), (oldRosters = []));
 	for (const roster of rosters) {
-		if (roster.data.date.getFullYear() === latestYear) latestRosters.push(roster);
-		else oldRosters.push(roster);
+		if (featuredRosters.length < 2 && roster.data.date.getFullYear() === latestYear) featuredRosters.push(roster);
+		else otherRosters.push(roster);
 	}
-} else {
-	latestRosters = rosters;
-	oldRosters = [];
 }
 
 type Props = { class?: string };
@@ -36,21 +33,31 @@ type Props = { class?: string };
 
 <section class:list={['mx-auto font-overpass text-slate-800', Astro.props.class]}>
 	<h2 class="text-center text-2xl font-bold tracking-tight sm:text-4xl">Check out who's playing</h2>
-	<ul class="mx-auto flex flex-col items-center justify-center gap-4 py-12 text-center sm:gap-6">
-		{
-			latestRosters.map(({ id, data: { date, division } }) => (
-				<li>
-					<a
-						class="flex max-w-fit gap-x-3 rounded-lg bg-emerald-600 p-3 px-4 text-lg font-bold text-white shadow shadow-emerald-500"
-						href={`/${id}`}
-					>
-						<span>
+	<ul class="py-12">
+		<div class="mx-auto flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:gap-6">
+			{
+				featuredRosters.map(({ id, data: { date, division } }) => (
+					<li>
+						<a
+							class="block w-36 rounded-lg bg-emerald-600 p-3 px-4 text-lg font-bold text-white shadow shadow-emerald-500"
+							href={`/${id}`}
+						>
 							{date.getFullYear()} {division.charAt(0).toUpperCase().concat(division.slice(1))}
-						</span>
-						<span class="scale-150">&rarr;</span>
-					</a>
-				</li>
-			))
-		}
+						</a>
+					</li>
+				))
+			}
+		</div>
+		<div class="mx-auto max-w-lg pt-12">
+			{
+				otherRosters.map(({ id, data: { date, division } }) => (
+					<li>
+						<a class="underline" href={`/${id}`}>
+							{date.getFullYear()} {division.charAt(0).toUpperCase().concat(division.slice(1))}
+						</a>
+					</li>
+				))
+			}
+		</div>
 	</ul>
 </section>
