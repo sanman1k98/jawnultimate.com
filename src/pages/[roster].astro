@@ -13,7 +13,7 @@ export const getStaticPaths = (async () => {
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
-const { date, division, players } = Astro.props.roster.data;
+const { caption, date, division, players } = Astro.props.roster.data;
 const title = `${date.getFullYear()} ${division.charAt(0).toUpperCase().concat(division.slice(1))} Team`;
 
 const showNumbers = players.every((player) => player.number !== undefined);
@@ -26,11 +26,14 @@ if (showNumbers) {
 }
 ---
 
-<MainLayout {title} class="mx-auto font-overpass text-slate-800">
-	<h1 class="pt-12 pb-6 text-center text-3xl font-bold sm:pb-8 sm:text-4xl">
-		{title}
-	</h1>
-	<ul class="mx-auto max-w-lg ps-16 pb-16 text-lg font-medium sm:columns-2 sm:ps-12 sm:text-xl">
+<MainLayout {title} class="font-overpass text-slate-800">
+	<hgroup class="mx-auto max-w-fit border-b-2 border-slate-400 p-12 pb-4 text-center">
+		<h1 class="pb-2 text-3xl font-bold sm:text-4xl">
+			{title}
+		</h1>
+		{caption && <p class="pb-2 text-xl font-medium text-slate-600 sm:text-2xl">{caption}</p>}
+	</hgroup>
+	<ul class="mx-auto max-w-xl ps-16 pt-12 pb-16 text-lg font-medium sm:columns-2 sm:ps-12 sm:text-xl">
 		{
 			players.map((player) => (
 				<li class="items-top mb-1 flex gap-x-2 text-nowrap sm:mb-2">
