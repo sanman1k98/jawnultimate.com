@@ -6,19 +6,17 @@ const exec = promisify(_exec);
 /**
  * Creates a lightweight Git tag.
  * @param {string} tagName - The name of the tag.
- * @param {string} [commit] - Optional commit hash or ref. Defaults to HEAD.
  * @returns {Promise<void>}
  */
-export async function createGitTag(tagName, commit = 'HEAD') {
+export async function createGitTag(tagName) {
 	if (!tagName) {
 		throw new Error('tagName is required.');
 	}
 
 	try {
-		await exec(`git tag ${tagName} ${commit}`);
-		console.log(`Lightweight tag '${tagName}' created on ${commit}`);
+		await exec(`git tag --sign ${tagName}`);
 	} catch (err) {
-		throw new Error(`Failed to create lightweight tag: ${err.stderr || err.message}`);
+		throw new Error(`Failed to create tag: ${err.stderr || err.message}`);
 	}
 }
 
