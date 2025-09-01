@@ -20,7 +20,8 @@ async function runCommandLive(command, args = []) {
 async function upload() {
 	try {
 		// 1. Ensure working tree is clean
-		if (!await isWorkingTreeClean()) {
+		const clean = await isWorkingTreeClean();
+		if (!clean) {
 			throw new Error('Working tree is not clean. Commit or stash your changes before uploading a new version.');
 		}
 
