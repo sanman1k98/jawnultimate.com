@@ -1,6 +1,7 @@
 /** @jsxRuntime automatic */
 /** @jsxImportSource #satori/jsx */
 import type { Props, SVGRenderOptions } from './shared';
+import { SATORI_SQUARE_ELEMENT_CLIP_PATHS } from '@/lib/css-shapes';
 import {
 	COLOR_EMERALD_600_HEX,
 	COLOR_YELLOW_600_HEX,
@@ -35,13 +36,13 @@ function Background(props: Props) {
  * Metro sign shape with green background.
  */
 function MetroSign(props: Props) {
-	// BUG: Satori v0.16.2: clip path only works on square shaped elements.
+	// BUG: In Satori v0.16.2, `clip-path` only works correctly on square elements.
 	const signWidth = 1200;
 	const signHeight = signWidth / 3;
 
 	// HACK: use two clip paths for the left and right side of the metro sign.
-	const leftShape = 'polygon(60% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 40%)';
-	const rightShape = 'polygon(0% 0%, 40% 0%, 100% 40%, 100% 100%, 0% 100%)';
+	const leftShape = SATORI_SQUARE_ELEMENT_CLIP_PATHS.METRO_STREET_SIGN_LEFT_SHAPE;
+	const rightShape = SATORI_SQUARE_ELEMENT_CLIP_PATHS.METRO_STREET_SIGN_RIGHT_SHAPE;
 
 	// We are are emulating a 36"x12" Philadephia metro sign, so we can use 3 square elements.
 	const squareStyles = {
@@ -64,7 +65,7 @@ function MetroSign(props: Props) {
 				alignItems: 'center',
 			}}
 		>
-			{/* Position the squares next to each other create the whole metro sign shape. */}
+			{/* Position the squares next to each other to create the whole metro sign shape. */}
 			<div style={{ ...squareStyles, left: 0, clipPath: leftShape, borderBottomLeftRadius: '2rem' }} />
 			<div style={{ ...squareStyles, left: signHeight }} />
 			<div style={{ ...squareStyles, right: 0, clipPath: rightShape, borderBottomRightRadius: '2rem' }} />
