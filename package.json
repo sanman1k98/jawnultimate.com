@@ -9,7 +9,8 @@
 		"dev": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
-		"deploy": "wrangler deploy",
+		"versions:deploy": "wrangler versions deploy",
+		"versions:upload": "node ./scripts/upload-new-version.js",
 		"lint": "eslint .",
 		"astro": "astro",
 		"wrangler": "wrangler"
