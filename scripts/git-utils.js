@@ -6,15 +6,16 @@ const exec = promisify(_exec);
 /**
  * Creates a lightweight Git tag.
  * @param {string} tagName - The name of the tag.
+ * @param {string} message - The message to annotate the tag with.
  * @returns {Promise<void>}
  */
-export async function createGitTag(tagName) {
+export async function createGitTag(tagName, message) {
 	if (!tagName) {
 		throw new Error('tagName is required.');
 	}
 
 	try {
-		await exec(`git tag --sign ${tagName}`);
+		await exec(`git tag --sign "${tagName}" --message "${message}"`);
 	} catch (err) {
 		throw new Error(`Failed to create tag: ${err.stderr || err.message}`);
 	}

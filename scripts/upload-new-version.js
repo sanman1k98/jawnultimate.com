@@ -30,12 +30,16 @@ async function upload() {
 		console.log('Getting existing tags...');
 		const existingTags = await getGitTags();
 
+		const formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'medium' });
+		const now = new Date();
+
 		// 3. Compute next CalVer tag.
-		const nextTag = getNextCalverTag(existingTags);
+		const nextTag = getNextCalverTag(existingTags, now);
+		const message = formatter.format(now);
 
 		// 4. Create the new Git tag.
 		console.log('Creating new tag...');
-		await createGitTag(nextTag);
+		await createGitTag(nextTag, message);
 		console.log(`Git tag '${nextTag}' created.`);
 
 		console.log('Pushing all tags to origin...');
