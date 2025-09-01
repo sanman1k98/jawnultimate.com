@@ -7,6 +7,7 @@
  * @see {@link https://www.phila.gov/media/20211208121718/Streets-standards-SN0102-overhead-sign-20211019.pdf Overhead Sign Standards}
  * @see {@link https://www.phila.gov/media/20250528103828/philadelphia-streets-engineering-standards-pses-2025-03-11-1.pdf Philadelphia Streets Engineering Standards}
  */
+import { METRO_STREET_SIGN } from '@/lib/css-shapes';
 
 type Props = {
 	class?: string;
@@ -16,8 +17,8 @@ type Props = {
 <div class:list={['relative mx-auto max-w-min', Astro.props.class]}>
 	<div class="absolute inset-x-0 bottom-0 h-[4rem] w-[18rem] bg-emerald-700/50 blur-lg"></div>
 	<header
-		style="--metro-street-sign-mask: linear-gradient(-33deg, black 87%, transparent 87%), linear-gradient(33deg, black 87%, transparent 87%)"
-		class="aspect-3/1 w-[18rem] overflow-hidden rounded-b-lg bg-emerald-600 mask-(--metro-street-sign-mask) mask-intersect font-overpass"
+		style={{ 'clip-path': METRO_STREET_SIGN }}
+		class="aspect-3/1 w-[18rem] overflow-hidden rounded-b-lg bg-emerald-600 font-overpass"
 	>
 		<ul aria-hidden="true" class="mx-auto flex items-center justify-center gap-x-2 text-lg font-bold text-white">
 			<li class="scale-150">&larr;</li>
