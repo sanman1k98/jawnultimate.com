@@ -79,7 +79,7 @@ let metroStreetSignRightShape: string;
 }
 
 /**
- * HACK: In Satori v0.16.2, `clip-path` only works correctly on square elements.
+ * HACK: In Satori v0.18.1, `clip-path` only works correctly on square elements.
  */
 export const SATORI_SQUARE_ELEMENT_CLIP_PATHS = {
 	METRO_STREET_SIGN_LEFT_SHAPE: metroStreetSignLeftShape,

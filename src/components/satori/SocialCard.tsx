@@ -36,7 +36,7 @@ function Background(props: Props) {
  * Metro sign shape with green background.
  */
 function MetroSign(props: Props) {
-	// BUG: In Satori v0.16.2, `clip-path` only works correctly on square elements.
+	// BUG: In Satori v0.18.1, `clip-path` only works correctly on square elements.
 	const signWidth = 1200;
 	const signHeight = signWidth / 3;
 
