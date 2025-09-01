@@ -20,18 +20,21 @@ async function runCommandLive(command, args = []) {
 async function upload() {
 	try {
 		// 1. Ensure working tree is clean
+		console.log('Checking if working tree is clean...');
 		const clean = await isWorkingTreeClean();
 		if (!clean) {
 			throw new Error('Working tree is not clean. Commit or stash your changes before uploading a new version.');
 		}
 
 		// 2. Get existing Git tags.
+		console.log('Getting existing tags...');
 		const existingTags = await getGitTags();
 
 		// 3. Compute next CalVer tag.
 		const nextTag = getNextCalverTag(existingTags);
 
 		// 4. Create the new Git tag.
+		console.log('Creating new tag...');
 		await createGitTag(nextTag);
 		console.log(`Git tag '${nextTag}' created.`);
 
