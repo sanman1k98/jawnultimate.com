@@ -48,14 +48,14 @@ export function parseSegments(version) {
  * @returns {string} The next version identifier following {@link CALVER_SCHEME_REGEX CalVer scheme}.
  */
 export function getNextCalver(versions, date = new Date()) {
-	const prefix = getCalverPrefix(date);
+	const prefix = getCalverPrefix(date); // 'YYYY.0M'
 
 	const nextPatch = versions
-		.filter(v => v.startsWith(prefix))
+		.filter(v => v.startsWith(prefix)) // Only versions for this month
 		.map(v => parseSegments(v))
-		.filter(Boolean)
-		.map(segments => Number(segments.patch))
-		.reduce((a, b) => Math.max(a, b), 0) + 1;
+		.filter(Boolean) // Filter versions not matching CalVer scheme
+		.map(segments => Number(segments.patch)) // Get the patches for this month
+		.reduce((a, b) => Math.max(a, b), -1) + 1; // Get the latest patch and increment
 
 	return `${prefix}.${nextPatch}`;
 }
