@@ -41,3 +41,32 @@ export async function isWorkingTreeClean() {
 			throw new Error('Failed to check status of working tree', { cause: err });
 		});
 }
+
+/**
+ * Get the current Git branch.
+ * @returns {Promise<string>} The name of the branch.
+ */
+export async function getCurrentBranch() {
+	return exec('git', ['branch', '--show-current'])
+		.then(({ stdout }) => stdout.trim())
+		.catch((err) => {
+			throw new Error('Failed to get current branch', { cause: err });
+		});
+}
+
+/**
+ * @param {string} branch - Name of the branch to check.
+ * @returns {Promise<boolean>} True if local is synced with origin.
+ */
+export async function checkSyncStatus(branch) {
+	return exec('git', ['fetch', 'origin', branch])
+		.catch((err) => {
+			throw new Error(`Failed to fetch remote branch ${branch} from origin`, { cause: err });
+		})
+		.then(() => exec('git', ['rev-parse', `origin/${branch}`, branch]))
+		.then(({ stdout }) => stdout.trim().split('\n'))
+		.then(([remoteHash, localHash]) => remoteHash === localHash)
+		.catch((err) => {
+			throw new Error('Failed to get hashes', { cause: err });
+		});
+}

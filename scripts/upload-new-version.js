@@ -1,15 +1,28 @@
 import { exit } from 'node:process';
 import { getNextCalverTag } from './calver-utils.js';
-import { createGitTag, getGitTags, isWorkingTreeClean } from './git-utils.js';
+import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './git-utils.js';
 import { run } from './proc-utils.js';
+
+const UPLOAD_BRANCH = 'main';
 
 async function upload() {
 	try {
+		console.log('Checking if current branch is main...');
+		if (await getCurrentBranch() !== UPLOAD_BRANCH) {
+			throw new Error('Can only upload new versions from main branch');
+		}
+
 		// 1. Ensure working tree is clean
 		console.log('Checking if working tree is clean...');
 		const clean = await isWorkingTreeClean();
 		if (!clean) {
 			throw new Error('Working tree is not clean. Commit or stash your changes before uploading a new version.');
+		}
+
+		console.log('Checking if local branch is in sync with remote...');
+		const synced = await checkSyncStatus(UPLOAD_BRANCH);
+		if (!synced) {
+			throw new Error('Local branch is not in sync with remote. Pull remote changes and/or push local changes before uploading a new version');
 		}
 
 		// 2. Get existing Git tags.
