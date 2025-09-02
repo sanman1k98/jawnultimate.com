@@ -39,12 +39,12 @@ async function upload() {
 		await createGitTag(tagName, message);
 		console.log('Created tag %s', tagName);
 
-		console.log('Pushing all tags to origin...');
-		await run('git', ['push', '--tags']);
-		console.log('Tags pushed');
-
 		console.log('Uploading new version with Wrangler...\n');
 		await run('pnpm', ['exec', 'wrangler', 'versions', 'upload', '--tag', tagName]);
+
+		console.log('Pushing tag %s to origin...\n', tagName);
+		await run('git', ['push', tagName]);
+
 		console.log('\n✅ Upload complete.');
 	} catch (err) {
 		console.error('\n❌ Upload failed:', err.message);
