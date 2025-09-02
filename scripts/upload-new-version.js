@@ -30,16 +30,14 @@ async function upload() {
 				.map(tag => tag.slice(1)),
 		);
 
-		const formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'medium' });
-		const now = new Date();
+		const nextVersion = getNextCalver(existingVersions);
+		console.log('New version: %s', nextVersion);
 
-		const nextVersion = getNextCalver(existingVersions, now);
 		const tagName = `v${nextVersion}`;
-		const message = formatter.format(now);
+		const message = `chore: release version ${nextVersion}`;
 
-		console.log('Creating new tag...');
 		await createGitTag(tagName, message);
-		console.log(`Git tag '${tagName}' created.`);
+		console.log('Created tag %s', tagName);
 
 		console.log('Pushing all tags to origin...');
 		await run('git', ['push', '--tags']);
