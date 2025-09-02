@@ -1,4 +1,4 @@
-import { exec } from './proc-utils';
+import { exec } from './proc-utils.js';
 
 /**
  * Creates an annotated Git tag.
