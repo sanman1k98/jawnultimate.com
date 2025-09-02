@@ -8,9 +8,9 @@ import { exec } from './proc-utils';
  */
 export async function createGitTag(tagName, message) {
 	if (!tagName) {
-		throw new Error('tagName is required.');
+		throw new TypeError('tagName is required.');
 	} else if (!message) {
-		throw new Error('message is required');
+		throw new TypeError('message is required');
 	}
 
 	return exec('git', ['tag', '--sign', tagName, '--message', message]).catch((err) => {
