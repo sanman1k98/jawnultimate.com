@@ -1,21 +1,7 @@
-import { spawn } from 'node:child_process';
 import { exit } from 'node:process';
 import { getNextCalverTag } from './calver-utils.js';
 import { createGitTag, getGitTags, isWorkingTreeClean } from './git-utils.js';
-
-async function runCommandLive(command, args = []) {
-	return new Promise((resolve, reject) => {
-		const proc = spawn(command, args, { stdio: 'inherit' });
-
-		proc.on('close', (code) => {
-			if (code === 0) {
-				resolve();
-			} else {
-				reject(new Error(`${command} exited with code ${code}`));
-			}
-		});
-	});
-}
+import { run } from './proc-utils.js';
 
 async function upload() {
 	try {
@@ -43,12 +29,12 @@ async function upload() {
 		console.log(`Git tag '${nextTag}' created.`);
 
 		console.log('Pushing all tags to origin...');
-		await runCommandLive('git', ['push', '--tags']);
+		await run('git', ['push', '--tags']);
 		console.log('Tags pushed');
 
 		// 5. Upload new version to Cloudflare Workers
 		console.log('Uploading new version with Wrangler...\n');
-		await runCommandLive('pnpm', ['exec', 'wrangler', 'versions', 'upload', '--tag', nextTag]);
+		await run('pnpm', ['exec', 'wrangler', 'versions', 'upload', '--tag', nextTag]);
 		console.log('\n✅ Upload complete.');
 	} catch (err) {
 		console.error('\n❌ Upload failed:', err.message);
