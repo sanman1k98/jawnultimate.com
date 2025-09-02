@@ -1,61 +1,61 @@
-const CALVER_REGEX = /^v(\d{4})\.(\d{2})\.(\d+)$/;
+/**
+ * **YYYY.0M.PATCH**
+ *
+ * - **YYYY** - Full year - 2006, 2016, 2106
+ * - **0M** - Zero-padded month - 01, 02 ... 11, 12
+ * - **PATCH** - 0 for the first version of the month, 1 for the second version, and so on
+ *
+ * @see {@link https://calver.org}
+ */
+const CALVER_SCHEME_REGEX = /^(\d{4})\.([01]\d)\.(\d+)$/;
 
 /**
- * Returns the current CalVer prefix like 'v2025.08'.
- * @param {Date} [date]
- * @returns {string} A CalVer prefix like 'v2025.08'.
+ * Get a partial version identifier for the given `date`.
+ * @param {Date} [date] Defaults to today's date.
+ * @returns {string} A partial version identifier with year and month segments **YYYY.0M**.
  */
-export function getCurrentCalverTagPrefix(date = new Date()) {
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0'); // 01-12
-	return `v${year}.${month}`;
+export function getCalverPrefix(date = new Date()) {
+	const fullYear = date.getFullYear();
+	const zeroPaddedMonth = String(date.getMonth() + 1).padStart(2, '0');
+	return `${fullYear}.${zeroPaddedMonth}`;
 }
 
 /**
- * Filters a list of tags to only match the vYYYY.0M.patch format.
- * @param {string[]} tags
- * @returns {string[]} filtered tags
+ * @typedef CalverSegments
+ * @prop {string} major - The full year.
+ * @prop {string} minor - Zero-padded month.
+ * @prop {string} patch - Starts at `0` for the first version of the month.
  */
-export function filterCalverTags(tags) {
-	return tags.filter(tag => CALVER_REGEX.test(tag));
-}
 
 /**
- * Parses a CalVer tag into parts.
- * @param {string} tag - A tag like 'v2025.08.3'
- * @returns {{ year: number, month: number, patch: number }} or null
+ * Parses a version identifier into segments matching the {@link CALVER_SCHEME_REGEX CalVer scheme}.
+ * @param {string} version - A version identifier like '2025.08.3'
+ * @returns {CalverSegments | null} `null` if argument does not match version scheme.
  */
-export function parseCalver(tag) {
-	const match = CALVER_REGEX.exec(tag);
+export function parseSegments(version) {
+	const match = CALVER_SCHEME_REGEX.exec(version);
 	if (!match)
 		return null;
 
 	const [, year, month, patch] = match;
-	return {
-		year: Number(year),
-		month: Number(month),
-		patch: Number(patch),
-	};
+	return { major: year, minor: month, patch };
 }
 
 /**
- * Gets the next CalVer tag based on existing tags.
- * @param {string[]} existingTags - list of git tags
- * @param {Date} [now] - optional Date object for testing
- * @returns {string} next tag, e.g., 'v2025.08.0' or 'v2025.08.3'
+ * Gets the next version based on previous versions and the given `date`.
+ * @param {string[]} versions - list of existing version identifiers.
+ * @param {Date} [date] - The date to create to new version for (defaults to today's date)
+ * @returns {string} The next version identifier following {@link CALVER_SCHEME_REGEX CalVer scheme}.
  */
-export function getNextCalverTag(existingTags, now = new Date()) {
-	const prefix = getCurrentCalverTagPrefix(now); // e.g., 'v2025.08'
-	const matching = filterCalverTags(existingTags).filter(tag =>
-		tag.startsWith(`${prefix}.`),
-	);
+export function getNextCalver(versions, date = new Date()) {
+	const prefix = getCalverPrefix(date);
 
-	const patches = matching
-		.map(tag => parseCalver(tag))
+	const nextPatch = versions
+		.filter(v => v.startsWith(prefix))
+		.map(v => parseSegments(v))
 		.filter(Boolean)
-		.map(parsed => parsed.patch);
-
-	const nextPatch = patches.length > 0 ? Math.max(...patches) + 1 : 0;
+		.map(segments => Number(segments.patch))
+		.reduce((a, b) => Math.max(a, b), 0) + 1;
 
 	return `${prefix}.${nextPatch}`;
 }
