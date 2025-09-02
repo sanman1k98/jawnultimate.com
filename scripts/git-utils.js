@@ -12,6 +12,8 @@ const exec = promisify(_exec);
 export async function createGitTag(tagName, message) {
 	if (!tagName) {
 		throw new Error('tagName is required.');
+	} else if (!message) {
+		throw new Error('message is required');
 	}
 
 	try {
