@@ -9,15 +9,6 @@ import type * as CSS from 'csstype';
 
 export interface JSXStyleProperties extends CSS.Properties<string | number> { }
 
-interface IntrinsicElementProps {
-	style?: JSXStyleProperties;
-	[prop: string]: any;
-}
-
-export interface JSXIntrinsicElements {
-	[element: string]: IntrinsicElementProps;
-}
-
 export type JSXKey = string | number | bigint;
 
 /**

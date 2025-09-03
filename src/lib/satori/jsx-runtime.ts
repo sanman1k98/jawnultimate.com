@@ -12,7 +12,7 @@
  * @see {@link ../../package.json `package.json`}
  */
 
-import type { FC, JSXElement, JSXIntrinsicElements, JSXKey } from './types';
+import type { FC, JSXElement, JSXKey, JSXStyleProperties } from './types';
 
 // eslint-disable-next-line ts/no-namespace
 export namespace JSX {
@@ -32,8 +32,21 @@ export namespace JSX {
 		children: {};
 	};
 
+	interface IntrinsicElementAttributes {
+		/**
+		 * Satori only supports a subset of CSS features.
+		 *
+		 * @see {@link https://github.com/vercel/satori?tab=readme-ov-file#css Supported CSS features}
+		 */
+		style?: JSXStyleProperties;
+		[prop: string]: any;
+	}
+
 	// TODO: define custom subset of IntrinsicElements supported by Satori.
-	export interface IntrinsicElements extends JSXIntrinsicElements { };
+	export interface IntrinsicElements {
+		[element: string]: IntrinsicElementAttributes;
+	};
+
 	export interface IntrinsicAttributes {
 		/**
 		 * NOTE: The explicitly declared key will take precedence over key spread in via props.
