@@ -43,7 +43,7 @@ async function upload(opts) {
 		);
 
 		const nextVersion = getNextCalver(existingVersions);
-		console.log('New version: %s', nextVersion);
+		console.log('New version: %o', nextVersion);
 
 		if (opts.dryRun) {
 			console.log('[Dry run] Returning early.');
@@ -54,12 +54,12 @@ async function upload(opts) {
 		const message = `chore: release version ${nextVersion}`;
 
 		await createGitTag(tagName, message);
-		console.log('Created tag %s', tagName);
+		console.log('Created tag %o', tagName);
 
 		console.log('Uploading new version with Wrangler...\n');
 		await run('pnpm', ['exec', 'wrangler', 'versions', 'upload', '--tag', tagName]);
 
-		console.log('Pushing tag %s to origin...\n', tagName);
+		console.log('Pushing tag %o to origin...\n', tagName);
 		await run('git', ['push', tagName]);
 
 		console.log('\n✅ Upload complete.');
