@@ -1,44 +1,50 @@
 /**
- * **YYYY.0M.PATCH**
+ * @file
+ * Utility functions for implementing our Calendar Versioning (CalVer) scheme.
  *
- * - **YYYY** - Full year - 2006, 2016, 2106
- * - **0M** - Zero-padded month - 01, 02 ... 11, 12
- * - **PATCH** - 0 for the first version of the month, 1 for the second version, and so on
+ * `YYYY.0M.PATCH`
+ *
+ * - `YYYY` - Full year - 2006, 2016, 2106
+ * - `0M` - Zero-padded month - 01, 02 ... 11, 12
+ * - `PATCH` - 0 for the first version of the month, 1 for the second, and so on
  *
  * @see {@link https://calver.org}
+ * @see {@link https://semver.org}
  */
+
+/** Matches `YYYY.0M.PATCH` CalVer scheme. */
 const CALVER_SCHEME_REGEX = /^(\d{4})\.([01]\d)\.(\d+)$/;
 
 /**
- * Get a partial version identifier for the given `date`.
- * @param {Date} [date] Defaults to today's date.
- * @returns {string} A partial version identifier with year and month segments **YYYY.0M**.
- */
-export function getCalverPrefix(date = new Date()) {
-	const fullYear = date.getFullYear();
-	const zeroPaddedMonth = String(date.getMonth() + 1).padStart(2, '0');
-	return `${fullYear}.${zeroPaddedMonth}`;
-}
-
-/**
- * @typedef CalverSegments
- * @prop {string} major - The full year.
- * @prop {string} minor - Zero-padded month.
- * @prop {string} patch - Starts at `0` for the first version of the month.
+ * @typedef {object} CalverSegments - A version identifier parsed into three segments.
+ * @property {string} major - Full year.
+ * @property {string} minor - Zero-padded month.
+ * @property {string} patch - Zero-based patch number.
  */
 
 /**
- * Parses a version identifier into segments matching the {@link CALVER_SCHEME_REGEX CalVer scheme}.
+ * Parses a version identifier into segments matching our {@link CALVER_SCHEME_REGEX CalVer scheme RegEx}.
  * @param {string} version - A version identifier like '2025.08.3'
- * @returns {CalverSegments | null} `null` if argument does not match version scheme.
+ * @returns {CalverSegments | null} Object containing the three segments, or `null` if `version` doesn't match scheme.
  */
 export function parseSegments(version) {
 	const match = CALVER_SCHEME_REGEX.exec(version);
 	if (!match)
 		return null;
 
-	const [, year, month, patch] = match;
-	return { major: year, minor: month, patch };
+	const [, fullYear, zeroPaddedMonth, patch] = match;
+	return { major: fullYear, minor: zeroPaddedMonth, patch };
+}
+
+/**
+ * Get a partial version identifier for the given `date`.
+ * @param {Date} [date] Defaults to today's date.
+ * @returns {string} A partial version identifier with major and minor segments `YYYY.0M`.
+ */
+export function getCalverPrefix(date = new Date()) {
+	const fullYear = date.getFullYear();
+	const zeroPaddedMonth = String(date.getMonth() + 1).padStart(2, '0');
+	return `${fullYear}.${zeroPaddedMonth}`;
 }
 
 /**
