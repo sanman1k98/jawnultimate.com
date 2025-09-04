@@ -35,10 +35,10 @@ const CALVER_SCHEME_RE = new RegExp(
 );
 
 /**
- * @typedef {object} CalverSegments - A version identifier parsed into three segments.
- * @property {string} major - Full year.
- * @property {string} minor - Zero-padded month.
- * @property {string} patch - Zero-based patch number.
+ * @typedef {object} CalverSegments - A version's number segments.
+ * @property {number} major - Full year.
+ * @property {number} minor - One-based month i.e., `1-12`.
+ * @property {number} patch - Zero-based patch number.
  */
 
 /**
@@ -52,7 +52,15 @@ export function parse(version) {
 		return null;
 
 	const [, fullYear, zeroPaddedMonth, patch] = match;
-	return { major: fullYear, minor: zeroPaddedMonth, patch };
+
+	if (!fullYear || !zeroPaddedMonth || !patch)
+		return null;
+
+	return {
+		major: Number(fullYear),
+		minor: Number(zeroPaddedMonth),
+		patch: Number(patch),
+	};
 }
 
 /**
@@ -65,31 +73,75 @@ export function valid(version) {
 }
 
 /**
- * Get a partial version identifier for the given `date`.
+ * Get CalVer segments for the given date and patch.
  * @param {Date} [date] Defaults to today's date.
- * @returns {string} A partial version identifier with major and minor segments `YYYY.0M`.
+ * @param {number} [patch] Defaults to `0`.
+ * @returns {CalverSegments} Object containing CalVer number segments.
  */
-export function getCalverPrefix(date = new Date()) {
-	const fullYear = date.getFullYear();
-	const zeroPaddedMonth = String(date.getMonth() + 1).padStart(2, '0');
-	return `${fullYear}.${zeroPaddedMonth}`;
+export function segments(date = new Date(), patch = 0) {
+	if (patch < 0 || !Number.isInteger(patch))
+		throw new TypeError('patch must be a positive integer');
+	else if (Number.isNaN(date.valueOf()))
+		throw new TypeError('Invalid date');
+	return {
+		major: date.getUTCFullYear(),
+		minor: date.getUTCMonth() + 1,
+		patch,
+	};
 }
 
 /**
- * Gets the next version based on previous versions and the given `date`.
- * @param {string[]} versions - list of existing version identifiers.
- * @param {Date} [date] - The date to create to new version for (defaults to today's date)
- * @returns {string} The next version identifier following {@link CALVER_SCHEME_RE CalVer scheme}.
+ * Turn number segments into a valid CalVer string.
+ * @param {CalverSegments} segments Has valid year, one-based month, and patch.
+ * @returns {string} A valid CalVer string.
  */
-export function next(versions, date = new Date()) {
-	const prefix = getCalverPrefix(date); // 'YYYY.0M'
+export function stringify(segments) {
+	if (!(segments && 'major' in segments && 'minor' in segments && 'patch' in segments))
+		throw new TypeError('Invalid segments');
 
-	const nextPatch = versions
-		.filter(v => v.startsWith(prefix)) // Only versions for this month
-		.map(v => parse(v))
-		.filter(Boolean) // Filter versions not matching CalVer scheme
-		.map(segments => Number(segments.patch)) // Get the patches for this month
-		.reduce((a, b) => Math.max(a, b), -1) + 1; // Get the latest patch and increment
+	const major = String(segments.major);
+	const minor = String(segments.minor).padStart(2, '0');
+	const patch = String(segments.patch);
 
-	return `${prefix}.${nextPatch}`;
+	if (!FULL_YEAR_RE.test(major))
+		throw new TypeError('Invalid major number');
+	else if (!ZERO_PADDED_MONTH_RE.test(minor))
+		throw new TypeError('Invalid minor number');
+	else if (!NUMERIC_IDENTIFIER_RE.test(patch))
+		throw new TypeError('Invalid patch number');
+
+	return `${major}.${minor}.${patch}`;
+}
+
+/**
+ * Determine the next version after the given current version and date.
+ * @param {string | null} current - Current or latest version as a valid CalVer string.
+ * @param {Date} [date] - Defaults to today's date.
+ * @returns {string} A valid CalVer string.
+ */
+export function next(current, date = new Date()) {
+	if (current === null)
+		return stringify(segments(date));
+
+	const parsed = parse(current);
+
+	if (!parsed) {
+		console.error('%o is not a valid version', current);
+		throw new TypeError('Not a valid CalVer string');
+	}
+
+	const currVersionDate = new Date(`${parsed.major}-${parsed.minor}`);
+
+	if (currVersionDate.valueOf() > date.valueOf()) {
+		const dateString = date.toLocaleDateString('en-US', { dateStyle: 'medium', timeZone: 'UTC' });
+		console.error('The given version (%o) is from the future relative to the given date (%o)', current, dateString);
+		throw new Error('Cannot determine next version');
+	}
+
+	const next = segments(date);
+
+	if (next.major === parsed.major && next.minor === parsed.minor)
+		next.patch = Number(parsed.patch) + 1;
+
+	return stringify(next);
 }

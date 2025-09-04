@@ -1,6 +1,6 @@
 import { exit } from 'node:process';
 import { parseArgs } from 'node:util';
-import { next } from './calver-utils.js';
+import * as CalVer from './calver-utils.js';
 import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './git-utils.js';
 import { run } from './proc-utils.js';
 
@@ -10,7 +10,7 @@ const UPLOAD_BRANCH = 'main';
  * Determine the next CalVer identifier, create a new Git tag for it, upload a
  * new version to Cloudflare, and push the new tag.
  * @param {object} opts
- * @param {boolean} opts.dryRun Don't actually create a new tag or upload to Cloudflare.
+ * @param {boolean | undefined} opts.dryRun Don't actually create a new tag or upload to Cloudflare.
  */
 async function upload(opts) {
 	try {
@@ -35,15 +35,10 @@ async function upload(opts) {
 			throw new Error('Local branch is not in sync with remote. Pull remote changes and/or push local changes before uploading a new version');
 		}
 
-		console.log('Determining next version...');
-		const existingVersions = await getGitTags().then(tags =>
-			tags
-				.filter(tag => tag.startsWith('v'))
-				.map(tag => tag.slice(1)),
-		);
-
-		const nextVersion = next(existingVersions);
-		console.log('New version: %o', nextVersion);
+		const versionTags = await getGitTags().then(tags => tags.filter(t => t.startsWith('v')));
+		const currentVersion = versionTags.pop()?.slice(1) ?? null;
+		const nextVersion = CalVer.next(currentVersion);
+		console.log('Next version: %o -> %o', currentVersion, nextVersion);
 
 		if (opts.dryRun) {
 			console.log('[Dry run] Returning early.');
