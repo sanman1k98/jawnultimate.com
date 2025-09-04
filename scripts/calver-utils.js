@@ -12,8 +12,23 @@
  * @see {@link https://semver.org}
  */
 
-/** Matches `YYYY.0M.PATCH` CalVer scheme. */
-const CALVER_SCHEME_REGEX = /^(\d{4})\.([01]\d)\.(\d+)$/;
+// Future-proofing: matches `2025` through `2999`.
+const FULL_YEAR_RE = /202[5-9]|20[3-9]\d|2[1-9]\d{2}/;
+const MAJOR_RE = FULL_YEAR_RE;
+
+// Matches `01` through `12`.
+const ZERO_PADDED_MONTH_RE = /0[1-9]|1[0-2]/;
+const MINOR_RE = ZERO_PADDED_MONTH_RE;
+
+// Matches a single `0`, or a positive digit followed by zero or more digits.
+const NUMERIC_IDENTIFIER_RE = /0|[1-9]\d*/;
+const PATCH_RE = NUMERIC_IDENTIFIER_RE;
+
+const CALVER_SCHEME_RE = new RegExp(
+	[MAJOR_RE, MINOR_RE, PATCH_RE]
+		.map(segment => `(${segment.source})`) // Capture groups
+		.join('\\.'), // Separate segments with dots
+);
 
 /**
  * @typedef {object} CalverSegments - A version identifier parsed into three segments.
@@ -23,12 +38,12 @@ const CALVER_SCHEME_REGEX = /^(\d{4})\.([01]\d)\.(\d+)$/;
  */
 
 /**
- * Parses a version identifier into segments matching our {@link CALVER_SCHEME_REGEX CalVer scheme RegEx}.
+ * Parses a version identifier into segments matching our {@link CALVER_SCHEME_RE CalVer scheme RegEx}.
  * @param {string} version - A version identifier like '2025.08.3'
  * @returns {CalverSegments | null} Object containing the three segments, or `null` if `version` doesn't match scheme.
  */
 export function parseSegments(version) {
-	const match = CALVER_SCHEME_REGEX.exec(version);
+	const match = CALVER_SCHEME_RE.exec(version);
 	if (!match)
 		return null;
 
@@ -51,7 +66,7 @@ export function getCalverPrefix(date = new Date()) {
  * Gets the next version based on previous versions and the given `date`.
  * @param {string[]} versions - list of existing version identifiers.
  * @param {Date} [date] - The date to create to new version for (defaults to today's date)
- * @returns {string} The next version identifier following {@link CALVER_SCHEME_REGEX CalVer scheme}.
+ * @returns {string} The next version identifier following {@link CALVER_SCHEME_RE CalVer scheme}.
  */
 export function getNextCalver(versions, date = new Date()) {
 	const prefix = getCalverPrefix(date); // 'YYYY.0M'
