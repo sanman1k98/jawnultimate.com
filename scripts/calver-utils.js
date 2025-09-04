@@ -56,6 +56,15 @@ export function parse(version) {
 }
 
 /**
+ * Determine if a given version is valid according to our scheme.
+ * @param {string} version - A version identifier like '2025.08.3'
+ * @returns {boolean} `true` if parseable, `false` if not.
+ */
+export function valid(version) {
+	return Boolean(parse(version));
+}
+
+/**
  * Get a partial version identifier for the given `date`.
  * @param {Date} [date] Defaults to today's date.
  * @returns {string} A partial version identifier with major and minor segments `YYYY.0M`.
