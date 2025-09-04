@@ -1,4 +1,4 @@
-import { exec } from './proc-utils.js';
+import { exec } from './proc.js';
 
 /**
  * Creates an annotated Git tag.
@@ -13,7 +13,7 @@ export async function createGitTag(tagName, message) {
 		throw new TypeError('message is required');
 	}
 
-	return exec('git', ['tag', '--sign', tagName, '--message', message]).catch((err) => {
+	return void exec('git', ['tag', '--sign', tagName, '--message', message]).catch((err) => {
 		throw new Error(`Failed to create tag ${tagName}`, { cause: err });
 	});
 }

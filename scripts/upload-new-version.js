@@ -1,8 +1,8 @@
 import { exit } from 'node:process';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver-utils.js';
-import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './git-utils.js';
-import { run } from './proc-utils.js';
+import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './utils/git.js';
+import { run } from './utils/proc.js';
 
 const UPLOAD_BRANCH = 'main';
 
