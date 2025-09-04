@@ -64,12 +64,18 @@ async function upload(opts) {
 
 		console.log('\n✅ Upload complete.');
 	} catch (err) {
-		console.error('\n❌ Upload failed:', err.message);
-		exit(1);
+		if (err instanceof Error) {
+			console.error('\n❌ Upload failed: %o', err.message);
+			if ('cause' in err)
+				console.error(err.cause);
+			exit(1);
+		}
+		throw new Error('\n❌ Unknown error occured in `upload()` function', { cause: err });
 	}
 }
 
 async function main() {
+	/** @satisfies {import('node:util').ParseArgsOptionsConfig} */
 	const options = {
 		'dry-run': { type: 'boolean' },
 	};
