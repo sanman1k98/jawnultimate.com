@@ -46,7 +46,7 @@ const CALVER_SCHEME_RE = new RegExp(
  * @param {string} version - A version identifier like '2025.08.3'
  * @returns {CalverSegments | null} Object containing the three segments, or `null` if `version` doesn't match scheme.
  */
-export function parseSegments(version) {
+export function parse(version) {
 	const match = CALVER_SCHEME_RE.exec(version);
 	if (!match)
 		return null;
@@ -72,12 +72,12 @@ export function getCalverPrefix(date = new Date()) {
  * @param {Date} [date] - The date to create to new version for (defaults to today's date)
  * @returns {string} The next version identifier following {@link CALVER_SCHEME_RE CalVer scheme}.
  */
-export function getNextCalver(versions, date = new Date()) {
+export function next(versions, date = new Date()) {
 	const prefix = getCalverPrefix(date); // 'YYYY.0M'
 
 	const nextPatch = versions
 		.filter(v => v.startsWith(prefix)) // Only versions for this month
-		.map(v => parseSegments(v))
+		.map(v => parse(v))
 		.filter(Boolean) // Filter versions not matching CalVer scheme
 		.map(segments => Number(segments.patch)) // Get the patches for this month
 		.reduce((a, b) => Math.max(a, b), -1) + 1; // Get the latest patch and increment

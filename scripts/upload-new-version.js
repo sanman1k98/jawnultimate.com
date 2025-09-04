@@ -1,6 +1,6 @@
 import { exit } from 'node:process';
 import { parseArgs } from 'node:util';
-import { getNextCalver } from './calver-utils.js';
+import { next } from './calver-utils.js';
 import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './git-utils.js';
 import { run } from './proc-utils.js';
 
@@ -42,7 +42,7 @@ async function upload(opts) {
 				.map(tag => tag.slice(1)),
 		);
 
-		const nextVersion = getNextCalver(existingVersions);
+		const nextVersion = next(existingVersions);
 		console.log('New version: %o', nextVersion);
 
 		if (opts.dryRun) {
