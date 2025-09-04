@@ -19,11 +19,11 @@ export async function createGitTag(tagName, message) {
 }
 
 /**
- * Retrieves a list of Git tags.
+ * Retrieves a list of Git tags sorted by version in ascending order.
  * @returns {Promise<string[]>} - Array of tag names.
  */
 export async function getGitTags() {
-	return exec('git', ['tag'])
+	return exec('git', ['tag', '--sort=version:refname'])
 		.then(({ stdout }) => stdout.trim().split('\n'))
 		.catch((err) => {
 			throw new Error('Failed to get tags', { cause: err });
