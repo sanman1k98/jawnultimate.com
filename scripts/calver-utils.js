@@ -2,6 +2,10 @@
  * @file
  * Utility functions for implementing our Calendar Versioning (CalVer) scheme.
  *
+ * Our scheme will have three number segments and be dot-separated like in
+ * SemVer. The segments `MAJOR`, `MINOR`, and `PATCH` refers to the first,
+ * second, and final segments respectively.
+ *
  * `YYYY.0M.PATCH`
  *
  * - `YYYY` - Full year - 2006, 2016, 2106
