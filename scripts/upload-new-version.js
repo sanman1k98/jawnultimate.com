@@ -1,6 +1,6 @@
 import { exit } from 'node:process';
 import { parseArgs } from 'node:util';
-import * as CalVer from './calver-utils.js';
+import * as CalVer from './calver.js';
 import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './utils/git.js';
 import { run } from './utils/proc.js';
 
