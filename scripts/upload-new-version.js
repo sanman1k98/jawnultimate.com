@@ -2,6 +2,7 @@ import { exit } from 'node:process';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.js';
 import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './utils/git.js';
+import { logger } from './utils/log.js';
 import { run } from './utils/proc.js';
 
 const UPLOAD_BRANCH = 'main';
@@ -14,23 +15,23 @@ const UPLOAD_BRANCH = 'main';
  */
 async function upload(opts) {
 	try {
-		console.log('Checking if current branch is main...');
+		logger.log('Checking if current branch is main...');
 		if (await getCurrentBranch() !== UPLOAD_BRANCH) {
 			throw new Error('Can only upload new versions from main branch');
 		}
 
-		console.log('Checking if working tree is clean...');
+		logger.log('Checking if working tree is clean...');
 		const clean = await isWorkingTreeClean();
 		if (opts.dryRun && !clean) {
-			console.warn('[Dry run] Working tree is not clean.');
+			logger.warn('[Dry run] Working tree is not clean.');
 		} else if (!clean) {
 			throw new Error('Working tree is not clean. Commit or stash your changes before uploading a new version.');
 		}
 
-		console.log('Checking if local branch is in sync with remote...');
+		logger.log('Checking if local branch is in sync with remote...');
 		const synced = await checkSyncStatus(UPLOAD_BRANCH);
 		if (opts.dryRun && !synced) {
-			console.warn('[Dry run] Local branch not in sync with remote.');
+			logger.warn('[Dry run] Local branch not in sync with remote.');
 		} else if (!synced) {
 			throw new Error('Local branch is not in sync with remote. Pull remote changes and/or push local changes before uploading a new version');
 		}
@@ -38,10 +39,10 @@ async function upload(opts) {
 		const versionTags = await getGitTags().then(tags => tags.filter(t => t.startsWith('v')));
 		const currentVersion = versionTags.pop()?.slice(1) ?? null;
 		const nextVersion = CalVer.next(currentVersion);
-		console.log('Next version: %o -> %o', currentVersion, nextVersion);
+		logger.log('Next version: %o -> %o', currentVersion, nextVersion);
 
 		if (opts.dryRun) {
-			console.log('[Dry run] Returning early.');
+			logger.log('[Dry run] Returning early.');
 			return;
 		}
 
@@ -49,20 +50,20 @@ async function upload(opts) {
 		const message = `chore: release version ${nextVersion}`;
 
 		await createGitTag(tagName, message);
-		console.log('Created tag %o', tagName);
+		logger.log('Created tag %o', tagName);
 
-		console.log('Uploading new version with Wrangler...\n');
+		logger.log('Uploading new version with Wrangler...\n');
 		await run('pnpm', ['exec', 'wrangler', 'versions', 'upload', '--tag', tagName]);
 
-		console.log('Pushing tag %o to origin...\n', tagName);
+		logger.log('Pushing tag %o to origin...\n', tagName);
 		await run('git', ['push', tagName]);
 
-		console.log('\n✅ Upload complete.');
+		logger.log('\n✅ Upload complete.');
 	} catch (err) {
 		if (err instanceof Error) {
-			console.error('\n❌ Upload failed: %o', err.message);
+			logger.error('\n❌ Upload failed: %o', err.message);
 			if ('cause' in err)
-				console.error(err.cause);
+				logger.error(err.cause);
 			exit(1);
 		}
 		throw new Error('\n❌ Unknown error occured in `upload()` function', { cause: err });
