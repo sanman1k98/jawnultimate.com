@@ -1,5 +1,6 @@
 import type { ParseArgsOptionsConfig } from 'node:util';
-import { exit } from 'node:process';
+import { exit, stdin, stdout } from 'node:process';
+import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.ts';
 import { getLastModifiedDuration } from './utils/fs.ts';
@@ -45,6 +46,23 @@ async function upload(opts: { dryRun?: boolean | undefined }) {
 
 		const lastRanBuild = await getLastModifiedDuration('./dist');
 		logger.log('Last ran build %o ago.', new Intl.DurationFormat().format(lastRanBuild));
+
+		{
+			using rl = createInterface({ input: stdin, output: stdout });
+			const signal = AbortSignal.timeout(15_000);
+
+			const proceed = await rl
+				.question('\nProceed with deployment? (enter/ctrl-c)\n', { signal })
+				.then(value => value.trim() === '')
+				.catch(() => false);
+
+			if (signal.aborted)
+				return logger.error('Timed out.');
+			else if (proceed === false)
+				return logger.log('Cancelled.');
+			else if (proceed === true)
+				logger.log('Creating git tag...');
+		}
 
 		if (opts.dryRun) {
 			logger.log('[Dry run] Returning early.');
