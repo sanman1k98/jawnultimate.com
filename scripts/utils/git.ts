@@ -2,11 +2,10 @@ import { exec } from './proc.ts';
 
 /**
  * Creates an annotated Git tag.
- * @param {string} tagName - The name of the tag.
- * @param {string} message - The message to annotate the tag with.
- * @returns {Promise<void>}
+ * @param tagName - The name of the tag.
+ * @param message - The message to annotate the tag with.
  */
-export async function createGitTag(tagName, message) {
+export async function createGitTag(tagName: string, message: string): Promise<void> {
 	if (!tagName) {
 		throw new TypeError('tagName is required.');
 	} else if (!message) {
@@ -20,9 +19,9 @@ export async function createGitTag(tagName, message) {
 
 /**
  * Retrieves a list of Git tags sorted by version in ascending order.
- * @returns {Promise<string[]>} - Array of tag names.
+ * @returns Array of tag names.
  */
-export async function getGitTags() {
+export async function getGitTags(): Promise<string[]> {
 	return exec('git', ['tag', '--sort=version:refname'])
 		.then(({ stdout }) => stdout.trim().split('\n'))
 		.catch((err) => {
@@ -32,9 +31,9 @@ export async function getGitTags() {
 
 /**
  * Checks if the Git working tree is clean (no uncommitted changes).
- * @returns {Promise<boolean>} - True if clean, false otherwise.
+ * @returns True if clean, false otherwise.
  */
-export async function isWorkingTreeClean() {
+export async function isWorkingTreeClean(): Promise<boolean> {
 	return exec('git', ['status', '--porcelain'])
 		.then(({ stdout }) => stdout.trim().length === 0)
 		.catch((err) => {
@@ -44,9 +43,9 @@ export async function isWorkingTreeClean() {
 
 /**
  * Get the current Git branch.
- * @returns {Promise<string>} The name of the branch.
+ * @returns The name of the branch.
  */
-export async function getCurrentBranch() {
+export async function getCurrentBranch(): Promise<string> {
 	return exec('git', ['branch', '--show-current'])
 		.then(({ stdout }) => stdout.trim())
 		.catch((err) => {
@@ -55,10 +54,10 @@ export async function getCurrentBranch() {
 }
 
 /**
- * @param {string} branch - Name of the branch to check.
- * @returns {Promise<boolean>} True if local is synced with origin.
+ * @param branch - Name of the branch to check.
+ * @returns True if local is synced with origin.
  */
-export async function checkSyncStatus(branch) {
+export async function checkSyncStatus(branch: string): Promise<boolean> {
 	return exec('git', ['fetch', 'origin', branch])
 		.catch((err) => {
 			throw new Error(`Failed to fetch remote branch ${branch} from origin`, { cause: err });
