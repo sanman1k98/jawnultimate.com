@@ -1,10 +1,10 @@
 import { exit } from 'node:process';
 import { parseArgs } from 'node:util';
-import * as CalVer from './calver.js';
+import * as CalVer from './calver.ts';
 import { getLastModifiedDuration } from './utils/fs.ts';
-import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './utils/git.js';
-import { logger } from './utils/log.js';
-import { run } from './utils/proc.js';
+import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './utils/git.ts';
+import { logger } from './utils/log.ts';
+import { run } from './utils/proc.ts';
 
 const UPLOAD_BRANCH = 'main';
 
