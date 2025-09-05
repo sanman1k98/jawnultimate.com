@@ -1,3 +1,4 @@
+import type { ParseArgsOptionsConfig } from 'node:util';
 import { exit } from 'node:process';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.ts';
@@ -11,10 +12,10 @@ const UPLOAD_BRANCH = 'main';
 /**
  * Determine the next CalVer identifier, create a new Git tag for it, upload a
  * new version to Cloudflare, and push the new tag.
- * @param {object} opts
- * @param {boolean | undefined} opts.dryRun Don't actually create a new tag or upload to Cloudflare.
+ * @param opts
+ * @param opts.dryRun - Don't actually create a new tag or upload to Cloudflare.
  */
-async function upload(opts) {
+async function upload(opts: { dryRun?: boolean | undefined }) {
 	try {
 		logger.log('Checking if current branch is main...');
 		if (await getCurrentBranch() !== UPLOAD_BRANCH) {
@@ -75,10 +76,9 @@ async function upload(opts) {
 }
 
 async function main() {
-	/** @satisfies {import('node:util').ParseArgsOptionsConfig} */
 	const options = {
 		'dry-run': { type: 'boolean' },
-	};
+	} satisfies ParseArgsOptionsConfig;
 
 	const { values } = parseArgs({ options });
 	const opts = { dryRun: values['dry-run'] };
