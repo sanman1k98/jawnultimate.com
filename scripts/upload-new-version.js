@@ -1,6 +1,7 @@
 import { exit } from 'node:process';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.js';
+import { getLastModifiedDuration } from './utils/fs.ts';
 import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './utils/git.js';
 import { logger } from './utils/log.js';
 import { run } from './utils/proc.js';
@@ -40,6 +41,9 @@ async function upload(opts) {
 		const currentVersion = versionTags.pop()?.slice(1) ?? null;
 		const nextVersion = CalVer.next(currentVersion);
 		logger.log('Next version: %o -> %o', currentVersion, nextVersion);
+
+		const lastRanBuild = await getLastModifiedDuration('./dist');
+		logger.log('Last ran build %o ago.', new Intl.DurationFormat().format(lastRanBuild));
 
 		if (opts.dryRun) {
 			logger.log('[Dry run] Returning early.');
