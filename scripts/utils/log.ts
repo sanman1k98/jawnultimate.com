@@ -13,20 +13,20 @@ function styledTime() {
 	return styleText(['dim', 'white'], text);
 }
 
-const LOG_LEVELS = /** @type {const} */(['log', 'warn', 'error']);
+const LOG_LEVELS = ['log', 'warn', 'error'] as const;
 
-/** @typedef {Extract<keyof typeof console, typeof LOG_LEVELS[number]>} LogLevel */
-/** @typedef {typeof console.log} LogFn A `console.log` like function. */
-/** @typedef {{ [k in LogLevel]: LogFn }} Logger Custom logger. */
+type LogLevel = Extract<keyof typeof console, typeof LOG_LEVELS[number]>;
+type LogFn = typeof console.log;
+type Logger = { [k in LogLevel]: LogFn };
 
 /**
  * @param {object} opts
  * @param {LogLevel} opts.level
  * @returns {LogFn} A `console.log`-like function.
  */
-function createLogFn(opts) {
+function createLogFn(opts: { level: LogLevel }): LogFn {
 	/** @satisfies {LogFn} */
-	const logFn = (...args) => {
+	const logFn = (...args: unknown[]) => {
 		const log = console[opts.level];
 		const ts = styledTime();
 		if (typeof args[0] === 'string') {
@@ -39,6 +39,6 @@ function createLogFn(opts) {
 	return logFn;
 }
 
-export const logger = /** @type {Logger} */ (Object.fromEntries(
+export const logger = Object.fromEntries(
 	LOG_LEVELS.map(level => [level, createLogFn({ level })]),
-));
+) as Logger;
