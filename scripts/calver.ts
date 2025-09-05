@@ -34,19 +34,21 @@ const CALVER_SCHEME_RE = new RegExp(
 		.join('\\.'), // Separate segments with dots
 );
 
-/**
- * @typedef {object} CalverSegments - A version's number segments.
- * @property {number} major - Full year.
- * @property {number} minor - One-based month i.e., `1-12`.
- * @property {number} patch - Zero-based patch number.
- */
+interface CalVerSegments {
+	/** Full year. */
+	major: number;
+	/** One-based month i.e., `1-12`. */
+	minor: number;
+	/** Zero-based patch number. */
+	patch: number;
+}
 
 /**
  * Parses a version identifier into segments matching our {@link CALVER_SCHEME_RE CalVer scheme RegEx}.
  * @param {string} version - A version identifier like '2025.08.3'
  * @returns {CalverSegments | null} Object containing the three segments, or `null` if `version` doesn't match scheme.
  */
-export function parse(version) {
+export function parse(version: string): CalVerSegments | null {
 	const match = CALVER_SCHEME_RE.exec(version);
 	if (!match)
 		return null;
@@ -68,17 +70,17 @@ export function parse(version) {
  * @param {string} version - A version identifier like '2025.08.3'
  * @returns {boolean} `true` if parseable, `false` if not.
  */
-export function valid(version) {
+export function valid(version: string): boolean {
 	return Boolean(parse(version));
 }
 
 /**
  * Get CalVer segments for the given date and patch.
- * @param {Date} [date] Defaults to today's date.
- * @param {number} [patch] Defaults to `0`.
- * @returns {CalverSegments} Object containing CalVer number segments.
+ * @param date - Defaults to today's date.
+ * @param patch - Defaults to `0`.
+ * @returns Object containing CalVer number segments.
  */
-export function segments(date = new Date(), patch = 0) {
+export function segments(date = new Date(), patch = 0): CalVerSegments {
 	if (patch < 0 || !Number.isInteger(patch))
 		throw new TypeError('patch must be a positive integer');
 	else if (Number.isNaN(date.valueOf()))
@@ -92,10 +94,10 @@ export function segments(date = new Date(), patch = 0) {
 
 /**
  * Turn number segments into a valid CalVer string.
- * @param {CalverSegments} segments Has valid year, one-based month, and patch.
- * @returns {string} A valid CalVer string.
+ * @param segments - Has valid year, one-based month, and patch.
+ * @returns A valid CalVer string.
  */
-export function stringify(segments) {
+export function stringify(segments: CalVerSegments): string {
 	if (!(segments && 'major' in segments && 'minor' in segments && 'patch' in segments))
 		throw new TypeError('Invalid segments');
 
@@ -115,11 +117,11 @@ export function stringify(segments) {
 
 /**
  * Determine the next version after the given current version and date.
- * @param {string | null} current - Current or latest version as a valid CalVer string.
- * @param {Date} [date] - Defaults to today's date.
- * @returns {string} A valid CalVer string.
+ * @param current - Current or latest version as a valid CalVer string.
+ * @param date - Defaults to today's date.
+ * @returns A valid CalVer string.
  */
-export function next(current, date = new Date()) {
+export function next(current: string | null, date = new Date()): string {
 	if (current === null)
 		return stringify(segments(date));
 
