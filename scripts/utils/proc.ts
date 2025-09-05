@@ -1,20 +1,11 @@
 import { execFile, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
 
-/**
- * Promisified wrapper around `child_process.execFile`.
- * @param {string} command
- * @param {string[]} [args]
- */
+/** Promisified wrapper around `child_process.execFile`. */
 export const exec = promisify(execFile);
 
-/**
- * Run `command` with live output.
- * @param {string} command
- * @param {string[]} [args]
- * @returns {Promise<void>}
- */
-export async function run(command, args = []) {
+/** Run `command` with live output. */
+export async function run(command: string, args: string[] = []): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const proc = spawn(command, args, { stdio: 'inherit' });
 
