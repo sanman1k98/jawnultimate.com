@@ -10,13 +10,18 @@ import { run } from './utils/proc.ts';
 
 const UPLOAD_BRANCH = 'main';
 
+interface UploadOptions {
+	/** Don't actually create a new tag or upload to Cloudflare. */
+	dryRun?: boolean | undefined;
+	/** Don't actually create a new tag or upload to Cloudflare. */
+	skipChecks?: boolean | undefined;
+};
+
 /**
  * Determine the next CalVer identifier, create a new Git tag for it, upload a
  * new version to Cloudflare, and push the new tag.
- * @param opts
- * @param opts.dryRun - Don't actually create a new tag or upload to Cloudflare.
  */
-async function upload(opts: { dryRun?: boolean | undefined }) {
+async function upload(opts: UploadOptions) {
 	try {
 		logger.log('Checking if current branch is main...');
 		if (await getCurrentBranch() !== UPLOAD_BRANCH) {
