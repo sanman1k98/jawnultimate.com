@@ -30,18 +30,6 @@ export async function getShortStatus(): Promise<string> {
 }
 
 /**
- * Checks if the Git working tree is clean (no uncommitted changes).
- * @returns True if clean, false otherwise.
- */
-export async function isWorkingTreeClean(): Promise<boolean> {
-	return exec('git', ['status', '--porcelain'])
-		.then(({ stdout }) => stdout.trim().length === 0)
-		.catch((err) => {
-			throw new Error('Failed to check status of working tree', { cause: err });
-		});
-}
-
-/**
  * Get the current Git branch.
  * @returns The name of the branch.
  */
