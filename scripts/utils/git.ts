@@ -23,10 +23,7 @@ export async function createGitTag(tagName: string, message: string): Promise<vo
  */
 export async function getGitTags(): Promise<string[]> {
 	return exec('git', ['tag', '--sort=version:refname'])
-		.then(({ stdout }) => stdout.trim().split('\n'))
-		.catch((err) => {
-			throw new Error('Failed to get tags', { cause: err });
-		});
+		.then(p => p.stdout.trim().split('\n'));
 }
 
 /**
@@ -53,11 +50,7 @@ export async function isWorkingTreeClean(): Promise<boolean> {
  * @returns The name of the branch.
  */
 export async function getCurrentBranch(): Promise<string> {
-	return exec('git', ['branch', '--show-current'])
-		.then(({ stdout }) => stdout.trim())
-		.catch((err) => {
-			throw new Error('Failed to get current branch', { cause: err });
-		});
+	return exec('git', ['branch', '--show-current']).then(p => p.stdout.trim());
 }
 
 /**
