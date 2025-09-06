@@ -5,7 +5,7 @@ import { exec } from './proc.ts';
  * @param tagName - The name of the tag.
  * @param message - The message to annotate the tag with.
  */
-export async function createGitTag(tagName: string, message: string): Promise<void> {
+export async function createTag(tagName: string, message: string): Promise<void> {
 	if (typeof tagName !== 'string')
 		throw new TypeError('Invalid tag name');
 	else if (typeof message !== 'string')
@@ -17,7 +17,7 @@ export async function createGitTag(tagName: string, message: string): Promise<vo
  * Retrieves a list of Git tags sorted by version in ascending order.
  * @returns Array of tag names.
  */
-export async function getGitTags(): Promise<string[]> {
+export async function getTags(): Promise<string[]> {
 	return exec('git', ['tag', '--sort=version:refname'])
 		.then(p => p.stdout.trim().split('\n'));
 }
@@ -41,7 +41,7 @@ export async function getCurrentBranch(): Promise<string> {
  * @param branch - Name of the branch to check.
  * @returns True if local is synced with origin.
  */
-export async function checkSyncStatus(branch: string): Promise<boolean> {
+export async function inSyncWithOrigin(branch: string): Promise<boolean> {
 	return exec('git', ['fetch', 'origin', branch])
 		.catch((err) => {
 			throw new Error(`Failed to fetch remote branch ${branch} from origin`, { cause: err });

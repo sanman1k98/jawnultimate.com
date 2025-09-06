@@ -4,7 +4,7 @@ import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.ts';
 import { getLastModifiedDuration } from './utils/fs.ts';
-import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, getShortStatus } from './utils/git.ts';
+import * as Git from './utils/git.ts';
 import { logger } from './utils/log.ts';
 import { run } from './utils/proc.ts';
 
@@ -27,9 +27,9 @@ async function upload(opts: UploadOptions) {
 	let inSync: boolean;
 
 	try {
-		currentBranch = await getCurrentBranch();
-		status = await getShortStatus();
-		inSync = await checkSyncStatus(currentBranch);
+		currentBranch = await Git.getCurrentBranch();
+		status = await Git.getShortStatus();
+		inSync = await Git.inSyncWithOrigin(currentBranch);
 	} catch (err) {
 		throw new Error('Error attempting status checks', { cause: err });
 	}
@@ -67,7 +67,7 @@ async function upload(opts: UploadOptions) {
 	}
 
 	try {
-		const versionTags = await getGitTags().then(tags => tags.filter(t => t.startsWith('v')));
+		const versionTags = await Git.getTags().then(tags => tags.filter(t => t.startsWith('v')));
 		const currentVersion = versionTags.pop()?.slice(1) ?? null;
 		const nextVersion = CalVer.next(currentVersion);
 		logger.log('Next version: %o -> %o', currentVersion, nextVersion);
@@ -100,7 +100,7 @@ async function upload(opts: UploadOptions) {
 		const tagName = `v${nextVersion}`;
 		const message = `chore: release version ${nextVersion}`;
 
-		await createGitTag(tagName, message);
+		await Git.createTag(tagName, message);
 		logger.log('Created tag %o', tagName);
 
 		logger.log('Uploading new version with Wrangler...\n');
