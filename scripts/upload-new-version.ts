@@ -4,17 +4,15 @@ import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.ts';
 import { getLastModifiedDuration } from './utils/fs.ts';
-import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, isWorkingTreeClean } from './utils/git.ts';
+import { checkSyncStatus, createGitTag, getCurrentBranch, getGitTags, getShortStatus } from './utils/git.ts';
 import { logger } from './utils/log.ts';
 import { run } from './utils/proc.ts';
-
-const UPLOAD_BRANCH = 'main';
 
 interface UploadOptions {
 	/** Don't actually create a new tag or upload to Cloudflare. */
 	dryRun?: boolean | undefined;
-	/** Don't actually create a new tag or upload to Cloudflare. */
-	skipChecks?: boolean | undefined;
+	/** Don't error or exit early if checks fail. */
+	warnOnly?: boolean | undefined;
 };
 
 /**
@@ -22,28 +20,53 @@ interface UploadOptions {
  * new version to Cloudflare, and push the new tag.
  */
 async function upload(opts: UploadOptions) {
+	logger.info('Starting status checks.');
+
+	let currentBranch: string;
+	let status: string;
+	let inSync: boolean;
+
 	try {
-		logger.log('Checking if current branch is main...');
-		if (await getCurrentBranch() !== UPLOAD_BRANCH) {
-			throw new Error('Can only upload new versions from main branch');
-		}
+		currentBranch = await getCurrentBranch();
+		status = await getShortStatus();
+		inSync = await checkSyncStatus(currentBranch);
+	} catch (err) {
+		throw new Error('Error attempting status checks', { cause: err });
+	}
 
-		logger.log('Checking if working tree is clean...');
-		const clean = await isWorkingTreeClean();
-		if (opts.dryRun && !clean) {
-			logger.warn('[Dry run] Working tree is not clean.');
-		} else if (!clean) {
-			throw new Error('Working tree is not clean. Commit or stash your changes before uploading a new version.');
-		}
+	const statusCheckErrors: Error[] = [];
 
-		logger.log('Checking if local branch is in sync with remote...');
-		const synced = await checkSyncStatus(UPLOAD_BRANCH);
-		if (opts.dryRun && !synced) {
-			logger.warn('[Dry run] Local branch not in sync with remote.');
-		} else if (!synced) {
-			throw new Error('Local branch is not in sync with remote. Pull remote changes and/or push local changes before uploading a new version');
-		}
+	if (currentBranch !== 'main') {
+		const err = new Error('Not on main branch', { cause: { currentBranch } });
+		statusCheckErrors.push(err);
+	}
 
+	if (status) {
+		const err = new Error('Working tree is not clean', { cause: status });
+		statusCheckErrors.push(err);
+	}
+
+	if (!inSync) {
+		const err = new Error('Local branch is not in sync with remote');
+		statusCheckErrors.push(err);
+	}
+
+	if (statusCheckErrors.length) {
+		if (opts.warnOnly) {
+			for (const err of statusCheckErrors) {
+				const fmt = 'Failed check: %s';
+				logger.warn(fmt, err.message);
+			}
+		} else {
+			const aggError = new AggregateError(statusCheckErrors, 'Did not pass status checks');
+			logger.error(aggError);
+			exit(1);
+		}
+	} else {
+		logger.info('Passed all checks');
+	}
+
+	try {
 		const versionTags = await getGitTags().then(tags => tags.filter(t => t.startsWith('v')));
 		const currentVersion = versionTags.pop()?.slice(1) ?? null;
 		const nextVersion = CalVer.next(currentVersion);
@@ -66,7 +89,7 @@ async function upload(opts: UploadOptions) {
 			else if (proceed === false)
 				return logger.log('Cancelled.');
 			else if (proceed === true)
-				logger.log('Creating git tag...');
+				logger.log('Proceeding...');
 		}
 
 		if (opts.dryRun) {
@@ -101,12 +124,15 @@ async function upload(opts: UploadOptions) {
 async function main() {
 	const options = {
 		'dry-run': { type: 'boolean' },
+		'warn-only': { type: 'boolean' },
 	} satisfies ParseArgsOptionsConfig;
 
 	const { values } = parseArgs({ options });
-	const opts = { dryRun: values['dry-run'] };
 
-	upload(opts);
+	upload({
+		dryRun: values['dry-run'],
+		warnOnly: values['warn-only'],
+	});
 }
 
 main();
