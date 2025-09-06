@@ -6,15 +6,11 @@ import { exec } from './proc.ts';
  * @param message - The message to annotate the tag with.
  */
 export async function createGitTag(tagName: string, message: string): Promise<void> {
-	if (!tagName) {
-		throw new TypeError('tagName is required.');
-	} else if (!message) {
-		throw new TypeError('message is required');
-	}
-
-	return void exec('git', ['tag', '--sign', tagName, '--message', message]).catch((err) => {
-		throw new Error(`Failed to create tag ${tagName}`, { cause: err });
-	});
+	if (typeof tagName !== 'string')
+		throw new TypeError('Invalid tag name');
+	else if (typeof message !== 'string')
+		throw new TypeError('Invalid message');
+	return void exec('git', ['tag', '--sign', tagName, '--message', message]);
 }
 
 /**
