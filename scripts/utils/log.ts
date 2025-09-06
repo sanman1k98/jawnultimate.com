@@ -7,38 +7,40 @@ const timeFormat = new Intl.DateTimeFormat('en-US', {
 	second: '2-digit',
 });
 
-function styledTime() {
+function timestamp() {
 	const now = new Date();
 	const text = timeFormat.format(now);
 	return styleText(['dim', 'white'], text);
 }
 
-const LOG_LEVELS = ['log', 'warn', 'error'] as const;
+type LogFn = (...args: any[]) => void;
 
-type LogLevel = Extract<keyof typeof console, typeof LOG_LEVELS[number]>;
-type LogFn = typeof console.log;
-type Logger = { [k in LogLevel]: LogFn };
-
-/**
- * @param {object} opts
- * @param {LogLevel} opts.level
- * @returns {LogFn} A `console.log`-like function.
- */
-function createLogFn(opts: { level: LogLevel }): LogFn {
-	/** @satisfies {LogFn} */
-	const logFn = (...args: unknown[]) => {
-		const log = console[opts.level];
-		const ts = styledTime();
-		if (typeof args[0] === 'string') {
-			log(`${ts} ${args[0]}`, ...args.slice(1));
-		} else {
-			log(ts, ...args);
-		}
-	};
-
-	return logFn;
+interface MessageFormatOptions {
+	/** Set to `false` to disable the timestamp. */
+	timestamp?: boolean;
+	/** Additional text to show after the timestamp and before the message. */
+	addText?: string[];
 }
 
-export const logger = Object.fromEntries(
-	LOG_LEVELS.map(level => [level, createLogFn({ level })]),
-) as Logger;
+/** Wrap `console` method with a timestamp and additional text. */
+function wrapMethod(fn: LogFn, opts?: MessageFormatOptions): LogFn {
+	return (...args: any[]) => {
+		const text = Array.from(opts?.addText ?? []);
+		if (opts?.timestamp !== false)
+			text.unshift(timestamp());
+		if (typeof args[0] === 'string') // Check for primary message
+			text.push(args.shift());
+		fn(text.join(' '), ...args);
+	};
+}
+
+const infoLabel = styleText(['bold', 'cyan'], '[INFO]');
+const warnLabel = styleText(['bold', 'yellow'], '[WARN]');
+const errorLabel = styleText(['bold', 'red'], '[ERROR]');
+
+export const logger = {
+	log: wrapMethod(console.log),
+	info: wrapMethod(console.info, { addText: [infoLabel] }),
+	warn: wrapMethod(console.warn, { addText: [warnLabel] }),
+	error: wrapMethod(console.error, { addText: [errorLabel] }),
+};
