@@ -70,10 +70,10 @@ async function upload(opts: UploadOptions) {
 		const versionTags = await Git.getTags().then(tags => tags.filter(t => t.startsWith('v')));
 		const currentVersion = versionTags.pop()?.slice(1) ?? null;
 		const nextVersion = CalVer.next(currentVersion);
-		logger.log('Next version: %o -> %o', currentVersion, nextVersion);
+		logger.info('Next version: %o -> %o', currentVersion, nextVersion);
 
 		const lastRanBuild = await getLastModifiedDuration('./dist');
-		logger.log('Last ran build %o ago.', new Intl.DurationFormat().format(lastRanBuild));
+		logger.info('Last ran build %o ago.', new Intl.DurationFormat().format(lastRanBuild));
 
 		{
 			using rl = createInterface({ input: stdin, output: stdout });
@@ -85,7 +85,7 @@ async function upload(opts: UploadOptions) {
 				.catch(() => false);
 
 			if (signal.aborted)
-				return logger.error('Timed out.');
+				return logger.log('Timed out.');
 			else if (proceed === false)
 				return logger.log('Cancelled.');
 			else if (proceed === true)
