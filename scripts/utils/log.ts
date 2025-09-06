@@ -30,7 +30,7 @@ function wrapMethod(fn: LogFn, opts?: MessageFormatOptions): LogFn {
 			text.unshift(timestamp());
 		if (typeof args[0] === 'string') // Check for primary message
 			text.push(args.shift());
-		fn(text.join(' '), ...args);
+		fn(text.filter(Boolean).join(' '), ...args);
 	};
 }
 
@@ -38,9 +38,23 @@ const infoLabel = styleText(['bold', 'cyan'], '[INFO]');
 const warnLabel = styleText(['bold', 'yellow'], '[WARN]');
 const errorLabel = styleText(['bold', 'red'], '[ERROR]');
 
-export const logger = {
-	log: wrapMethod(console.log),
-	info: wrapMethod(console.info, { addText: [infoLabel] }),
-	warn: wrapMethod(console.warn, { addText: [warnLabel] }),
-	error: wrapMethod(console.error, { addText: [errorLabel] }),
-};
+export function createLogger(opts?: { scope?: string | Parameters<typeof styleText> }) {
+	const scope = opts?.scope;
+	let scopeLabel: string;
+	if (typeof scope === 'string')
+		scopeLabel = styleText('dim', scope);
+	else if (Array.isArray(scope))
+		scopeLabel = styleText(...scope);
+	else if (scope === undefined)
+		scopeLabel = '';
+	else
+		throw new TypeError('Invalid scope');
+	return {
+		log: wrapMethod(console.log),
+		info: wrapMethod(console.info, { addText: [scopeLabel, infoLabel] }),
+		warn: wrapMethod(console.warn, { addText: [scopeLabel, warnLabel] }),
+		error: wrapMethod(console.error, { addText: [scopeLabel, errorLabel] }),
+	};
+}
+
+export const logger = createLogger();
