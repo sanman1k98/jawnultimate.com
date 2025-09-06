@@ -84,7 +84,7 @@ async function upload(opts: UploadOptions) {
 		await run('pnpm', ['exec', 'wrangler', 'versions', 'upload', '--tag', tagName]);
 
 		logger.log('Pushing tag %o to origin...\n', tagName);
-		await run('git', ['push', tagName]);
+		await run('git', ['push', 'origin', tagName]);
 
 		logger.log('\n✅ Upload complete.');
 	} catch (err) {
