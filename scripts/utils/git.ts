@@ -30,6 +30,13 @@ export async function getGitTags(): Promise<string[]> {
 }
 
 /**
+ * Get the status of the working tree in short-format.
+ */
+export async function getShortStatus(): Promise<string> {
+	return exec('git', ['status', '--short']).then(p => p.stdout.trim());
+}
+
+/**
  * Checks if the Git working tree is clean (no uncommitted changes).
  * @returns True if clean, false otherwise.
  */
