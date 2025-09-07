@@ -65,10 +65,18 @@ async function upload(opts: UploadOptions) {
 				log(...args);
 			}
 			log('Failed status checks');
-			if (!opts.warnOnly)
+			if (!opts.warnOnly) {
+				logger.log('Aborting');
 				exit(1);
+			}
+		} else if (err instanceof Error) {
+			const e = new Error('Unhandled exception', { cause: err });
+			logger.error(e);
+			throw e;
 		} else {
-			throw new TypeError('Error attempting status checks', { cause: err });
+			const e = new Error('Unknown exception', { cause: err });
+			logger.error(e);
+			throw e;
 		}
 	}
 
