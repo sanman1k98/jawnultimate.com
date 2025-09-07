@@ -30,11 +30,10 @@ export async function getShortStatus(): Promise<string> {
 }
 
 /**
- * Get the current Git branch.
- * @returns The name of the branch.
+ * @returns The name of the current branch or `null` if detatched.
  */
-export async function getCurrentBranch(): Promise<string> {
-	return exec('git', ['branch', '--show-current']).then(p => p.stdout.trim());
+export async function getCurrentBranch(): Promise<string | null> {
+	return exec('git', ['branch', '--show-current']).then(p => p.stdout.trim() || null);
 }
 
 /**
