@@ -1,43 +1,11 @@
 import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.ts';
+import { startPreDeployChecks } from './checks.ts';
 import { getLastModifiedDuration } from './utils/fs.ts';
 import * as Git from './utils/git.ts';
 import { logger } from './utils/log.ts';
 import { run } from './utils/proc.ts';
-
-/**
- * Checks that the working tree is clean and the local branch is in sync with origin.
- * @throws {AggregateError} Thrown if a check does not pass.
- */
-async function statusChecks(): Promise<true> {
-	const errors: Error[] = [];
-
-	const branch = await Git.getCurrentBranch();
-	if (branch !== 'main') {
-		errors.push(
-			new Error('Not on main branch', { cause: { branch } }),
-		);
-	}
-
-	const status = await Git.getShortStatus();
-	if (status) {
-		errors.push(
-			new Error('Working tree is not clean', { cause: status.split('\n') }),
-		);
-	}
-
-	const inSync = await Git.inSyncWithOrigin(branch);
-	if (!inSync) {
-		errors.push(
-			new Error('Local branch is not in sync with origin'),
-		);
-	}
-
-	if (errors.length)
-		throw new AggregateError(errors, 'Failed status checks');
-	return true;
-}
 
 interface UploadOptions {
 	/** Don't actually create a new tag or upload to Cloudflare. */
@@ -51,28 +19,24 @@ interface UploadOptions {
  * new version to Cloudflare, and push the new tag.
  */
 async function upload(opts: UploadOptions) {
-	await statusChecks()
-		.then(() => logger.info('Passed status checks'))
-		.catch((err) => {
-			if (err instanceof AggregateError) {
-				const msg = err.message.concat('\n');
-				if (!opts.warnOnly) {
-					logger.error(msg);
-					throw err;
-				} else {
-					logger.warn(msg);
-					logger.warn(err, '\n');
-				}
-			} else if (err instanceof Error) {
-				const e = new Error('Unhandled exception', { cause: err });
-				logger.error(e.message.concat('\n'));
-				throw e;
+	await Promise.allSettled(startPreDeployChecks()).then((checks) => {
+		const errors = checks
+			.filter(check => check.status === 'rejected')
+			.map(res => res.reason);
+
+		if (errors.length) {
+			const aggError = new AggregateError(errors, 'Failed pre-deploy checks');
+			if (opts.warnOnly) {
+				logger.warn(aggError.message, '\n');
+				logger.warn(aggError, '\n');
 			} else {
-				const e = new Error('Unknown exception', { cause: err });
-				logger.error(e.message.concat('\n'));
-				throw e;
+				logger.error(aggError.message, '\n');
+				throw aggError;
 			}
-		});
+		} else {
+			logger.info('Passed pre-deploy checks');
+		}
+	});
 
 	const versionTags = await Git.getTags().then(tags => tags.filter(t => t.startsWith('v')));
 	const currentVersion = versionTags.pop()?.slice(1) ?? null;
