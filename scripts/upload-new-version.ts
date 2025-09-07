@@ -8,6 +8,40 @@ import * as Git from './utils/git.ts';
 import { logger } from './utils/log.ts';
 import { run } from './utils/proc.ts';
 
+/**
+ * Checks that the working tree is clean and the local branch is in sync with origin.
+ * @throws {AggregateError} Thrown if a check does not pass.
+ */
+async function statusChecks(): Promise<true> {
+	const errors: Error[] = [];
+
+	const branch = await Git.getCurrentBranch();
+	const status = await Git.getShortStatus();
+	const inSync = await Git.inSyncWithOrigin(branch);
+
+	if (branch !== 'main') {
+		errors.push(
+			new Error('Not on main branch', { cause: { branch } }),
+		);
+	}
+
+	if (status) {
+		errors.push(
+			new Error('Working tree is not clean', { cause: status.split('\n') }),
+		);
+	}
+
+	if (!inSync) {
+		errors.push(
+			new Error('Local branch is not in sync with origin'),
+		);
+	}
+
+	if (errors.length)
+		throw new AggregateError(errors, 'Failed status checks');
+	return true;
+}
+
 interface UploadOptions {
 	/** Don't actually create a new tag or upload to Cloudflare. */
 	dryRun?: boolean | undefined;
@@ -20,50 +54,23 @@ interface UploadOptions {
  * new version to Cloudflare, and push the new tag.
  */
 async function upload(opts: UploadOptions) {
-	logger.info('Starting status checks.');
-
-	let currentBranch: string;
-	let status: string;
-	let inSync: boolean;
-
 	try {
-		currentBranch = await Git.getCurrentBranch();
-		status = await Git.getShortStatus();
-		inSync = await Git.inSyncWithOrigin(currentBranch);
+		await statusChecks();
+		logger.info('Passed status checks');
 	} catch (err) {
-		throw new Error('Error attempting status checks', { cause: err });
-	}
-
-	const statusCheckErrors: Error[] = [];
-
-	if (currentBranch !== 'main') {
-		const err = new Error('Not on main branch', { cause: { currentBranch } });
-		statusCheckErrors.push(err);
-	}
-
-	if (status) {
-		const err = new Error('Working tree is not clean', { cause: status });
-		statusCheckErrors.push(err);
-	}
-
-	if (!inSync) {
-		const err = new Error('Local branch is not in sync with remote');
-		statusCheckErrors.push(err);
-	}
-
-	if (statusCheckErrors.length) {
-		if (opts.warnOnly) {
-			for (const err of statusCheckErrors) {
-				const fmt = 'Failed check: %s';
-				logger.warn(fmt, err.message);
+		if (err instanceof AggregateError) {
+			const log = opts.warnOnly ? logger.warn : logger.error;
+			for (const { message, cause } of err.errors as Error[]) {
+				const args: any[] = [message];
+				cause && args.push(cause);
+				log(...args);
 			}
+			log('Failed status checks');
+			if (!opts.warnOnly)
+				exit(0);
 		} else {
-			const aggError = new AggregateError(statusCheckErrors, 'Did not pass status checks');
-			logger.error(aggError);
-			exit(1);
+			throw new TypeError('Error attempting status checks', { cause: err });
 		}
-	} else {
-		logger.info('Passed all checks');
 	}
 
 	try {
