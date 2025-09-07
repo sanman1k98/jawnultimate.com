@@ -80,59 +80,49 @@ async function upload(opts: UploadOptions) {
 		}
 	}
 
-	try {
-		const versionTags = await Git.getTags().then(tags => tags.filter(t => t.startsWith('v')));
-		const currentVersion = versionTags.pop()?.slice(1) ?? null;
-		const nextVersion = CalVer.next(currentVersion);
-		logger.info('Next version: %o -> %o', currentVersion, nextVersion);
+	const versionTags = await Git.getTags().then(tags => tags.filter(t => t.startsWith('v')));
+	const currentVersion = versionTags.pop()?.slice(1) ?? null;
+	const nextVersion = CalVer.next(currentVersion);
+	logger.info('Next version: %o -> %o', currentVersion, nextVersion);
 
-		const lastRanBuild = await getLastModifiedDuration('./dist');
-		logger.info('Last ran build %o ago.', new Intl.DurationFormat().format(lastRanBuild));
+	const lastRanBuild = await getLastModifiedDuration('./dist');
+	logger.info('Last ran build %o ago.', new Intl.DurationFormat().format(lastRanBuild));
 
-		{
-			using rl = createInterface({ input: stdin, output: stdout });
-			const signal = AbortSignal.timeout(15_000);
+	{
+		using rl = createInterface({ input: stdin, output: stdout });
+		const signal = AbortSignal.timeout(15_000);
 
-			const proceed = await rl
-				.question('\nProceed with deployment? (enter/ctrl-c)\n', { signal })
-				.then(value => value.trim() === '')
-				.catch(() => false);
+		const proceed = await rl
+			.question('\nProceed with deployment? (enter/ctrl-c)\n', { signal })
+			.then(value => value.trim() === '')
+			.catch(() => false);
 
-			if (signal.aborted)
-				return logger.log('Timed out.');
-			else if (proceed === false)
-				return logger.log('Cancelled.');
-			else if (proceed === true)
-				logger.log('Proceeding...');
-		}
-
-		if (opts.dryRun) {
-			logger.log('[Dry run] Returning early.');
-			return;
-		}
-
-		const tagName = `v${nextVersion}`;
-		const message = `chore: release version ${nextVersion}`;
-
-		await Git.createTag(tagName, message);
-		logger.log('Created tag %o', tagName);
-
-		logger.log('Uploading new version with Wrangler...\n');
-		await run('pnpm', ['exec', 'wrangler', 'versions', 'upload', '--tag', tagName]);
-
-		logger.log('Pushing tag %o to origin...\n', tagName);
-		await run('git', ['push', 'origin', tagName]);
-
-		logger.log('\n✅ Upload complete.');
-	} catch (err) {
-		if (err instanceof Error) {
-			logger.error('\n❌ Upload failed: %o', err.message);
-			if ('cause' in err)
-				logger.error(err.cause);
-			exit(1);
-		}
-		throw new Error('\n❌ Unknown error occured in `upload()` function', { cause: err });
+		if (signal.aborted)
+			return logger.log('Timed out.');
+		else if (proceed === false)
+			return logger.log('Cancelled.');
+		else if (proceed === true)
+			logger.log('Proceeding...');
 	}
+
+	if (opts.dryRun) {
+		logger.log('[Dry run] Returning early.');
+		return;
+	}
+
+	const tagName = `v${nextVersion}`;
+	const message = `chore: release version ${nextVersion}`;
+
+	await Git.createTag(tagName, message);
+	logger.log('Created tag %o', tagName);
+
+	logger.log('Uploading new version with Wrangler...\n');
+	await run('pnpm', ['exec', 'wrangler', 'versions', 'upload', '--tag', tagName]);
+
+	logger.log('Pushing tag %o to origin...\n', tagName);
+	await run('git', ['push', 'origin', tagName]);
+
+	logger.log('\n✅ Upload complete.');
 }
 
 async function main() {
