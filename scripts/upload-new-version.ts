@@ -16,21 +16,20 @@ async function statusChecks(): Promise<true> {
 	const errors: Error[] = [];
 
 	const branch = await Git.getCurrentBranch();
-	const status = await Git.getShortStatus();
-	const inSync = await Git.inSyncWithOrigin(branch);
-
 	if (branch !== 'main') {
 		errors.push(
 			new Error('Not on main branch', { cause: { branch } }),
 		);
 	}
 
+	const status = await Git.getShortStatus();
 	if (status) {
 		errors.push(
 			new Error('Working tree is not clean', { cause: status.split('\n') }),
 		);
 	}
 
+	const inSync = await Git.inSyncWithOrigin(branch);
 	if (!inSync) {
 		errors.push(
 			new Error('Local branch is not in sync with origin'),
