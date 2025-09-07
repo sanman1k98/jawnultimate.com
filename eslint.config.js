@@ -20,6 +20,7 @@ export default antfu({
 		html: true,
 		css: true,
 		prettierOptions: {
+			// @ts-expect-error options for plugins not not typed
 			astroAllowShorthand: true,
 			tailwindStylesheet: './src/styles/tailwind.css',
 			plugins: [
