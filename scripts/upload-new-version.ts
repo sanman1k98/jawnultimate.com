@@ -52,33 +52,6 @@ interface UploadOptions {
  * new version to Cloudflare, and push the new tag.
  */
 async function upload(opts: UploadOptions) {
-	try {
-		await statusChecks();
-		logger.info('Passed status checks');
-	} catch (err) {
-		if (err instanceof AggregateError) {
-			const log = opts.warnOnly ? logger.warn : logger.error;
-			for (const { message, cause } of err.errors as Error[]) {
-				const args: any[] = [message];
-				cause && args.push(cause);
-				log(...args);
-			}
-			log('Failed status checks');
-			if (!opts.warnOnly) {
-				logger.log('Aborting');
-				exit(1);
-			}
-		} else if (err instanceof Error) {
-			const e = new Error('Unhandled exception', { cause: err });
-			logger.error(e);
-			throw e;
-		} else {
-			const e = new Error('Unknown exception', { cause: err });
-			logger.error(e);
-			throw e;
-		}
-	}
-
 	const versionTags = await Git.getTags().then(tags => tags.filter(t => t.startsWith('v')));
 	const currentVersion = versionTags.pop()?.slice(1) ?? null;
 	const nextVersion = CalVer.next(currentVersion);
@@ -137,6 +110,28 @@ async function main() {
 		'warn-only': warnOnly,
 	} = cliArgs.values;
 
+	await statusChecks()
+		.then(() => logger.info('Passed status checks'))
+		.catch((err) => {
+			if (err instanceof AggregateError) {
+				const msg = err.message.concat('\n');
+				if (!warnOnly) {
+					logger.error(msg);
+					throw err;
+				} else {
+					logger.warn(msg);
+					logger.warn(err, '\n');
+				}
+			} else if (err instanceof Error) {
+				const e = new Error('Unhandled exception', { cause: err });
+				logger.error(e.message.concat('\n'));
+				throw e;
+			} else {
+				const e = new Error('Unknown exception', { cause: err });
+				logger.error(e.message.concat('\n'));
+				throw e;
+			}
+		});
 
 	upload({ dryRun, warnOnly });
 }
