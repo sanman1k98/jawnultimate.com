@@ -40,7 +40,10 @@ export async function getCurrentBranch(): Promise<string | null> {
  * @param branch - Name of the branch to check.
  * @returns True if local is synced with origin.
  */
-export async function inSyncWithOrigin(branch: string): Promise<boolean> {
+export async function inSyncWithOrigin(branch?: string | null): Promise<boolean> {
+	if (typeof branch !== 'string' && branch !== undefined && branch !== null)
+		throw new TypeError('Invalid branch name', { cause: { branch } });
+	branch ||= 'HEAD';
 	return exec('git', ['fetch', 'origin', branch])
 		.catch((err) => {
 			throw new Error(`Failed to fetch remote branch ${branch} from origin`, { cause: err });
