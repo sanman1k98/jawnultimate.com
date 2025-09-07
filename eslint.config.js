@@ -1,6 +1,6 @@
 import antfu from '@antfu/eslint-config';
 
-export default antfu({
+const base = antfu({
 	astro: true,
 	typescript: true,
 	stylistic: {
@@ -29,3 +29,15 @@ export default antfu({
 		},
 	},
 });
+
+export default base
+	.override(
+		'antfu/disables/scripts',
+		{
+			rules: {
+				'node/prefer-global/process': [
+					'off',
+				],
+			},
+		},
+	);
