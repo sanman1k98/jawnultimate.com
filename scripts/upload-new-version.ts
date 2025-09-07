@@ -1,4 +1,3 @@
-import type { ParseArgsOptionsConfig } from 'node:util';
 import { exit, stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
@@ -126,17 +125,20 @@ async function upload(opts: UploadOptions) {
 }
 
 async function main() {
-	const options = {
-		'dry-run': { type: 'boolean' },
-		'warn-only': { type: 'boolean' },
-	} satisfies ParseArgsOptionsConfig;
-
-	const { values } = parseArgs({ options });
-
-	upload({
-		dryRun: values['dry-run'],
-		warnOnly: values['warn-only'],
+	const cliArgs = parseArgs({
+		options: {
+			'dry-run': { type: 'boolean' },
+			'warn-only': { type: 'boolean' },
+		},
 	});
+
+	const {
+		'dry-run': dryRun,
+		'warn-only': warnOnly,
+	} = cliArgs.values;
+
+
+	upload({ dryRun, warnOnly });
 }
 
 main();
