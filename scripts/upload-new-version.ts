@@ -67,7 +67,7 @@ async function upload(opts: UploadOptions) {
 			}
 			log('Failed status checks');
 			if (!opts.warnOnly)
-				exit(0);
+				exit(1);
 		} else {
 			throw new TypeError('Error attempting status checks', { cause: err });
 		}
