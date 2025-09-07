@@ -1,4 +1,3 @@
-import { exit, stdin, stdout } from 'node:process';
 import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.ts';
@@ -52,6 +51,29 @@ interface UploadOptions {
  * new version to Cloudflare, and push the new tag.
  */
 async function upload(opts: UploadOptions) {
+	await statusChecks()
+		.then(() => logger.info('Passed status checks'))
+		.catch((err) => {
+			if (err instanceof AggregateError) {
+				const msg = err.message.concat('\n');
+				if (!opts.warnOnly) {
+					logger.error(msg);
+					throw err;
+				} else {
+					logger.warn(msg);
+					logger.warn(err, '\n');
+				}
+			} else if (err instanceof Error) {
+				const e = new Error('Unhandled exception', { cause: err });
+				logger.error(e.message.concat('\n'));
+				throw e;
+			} else {
+				const e = new Error('Unknown exception', { cause: err });
+				logger.error(e.message.concat('\n'));
+				throw e;
+			}
+		});
+
 	const versionTags = await Git.getTags().then(tags => tags.filter(t => t.startsWith('v')));
 	const currentVersion = versionTags.pop()?.slice(1) ?? null;
 	const nextVersion = CalVer.next(currentVersion);
@@ -61,7 +83,7 @@ async function upload(opts: UploadOptions) {
 	logger.info('Last ran build %o ago.', new Intl.DurationFormat().format(lastRanBuild));
 
 	{
-		using rl = createInterface({ input: stdin, output: stdout });
+		using rl = createInterface({ input: process.stdin, output: process.stdout });
 		const signal = AbortSignal.timeout(15_000);
 
 		const proceed = await rl
@@ -97,43 +119,18 @@ async function upload(opts: UploadOptions) {
 	logger.log('\n✅ Upload complete.');
 }
 
-async function main() {
-	const cliArgs = parseArgs({
+export async function cmd(opts = { args: process.argv.slice(2) }) {
+	const { values } = parseArgs({
+		args: opts.args,
 		options: {
 			'dry-run': { type: 'boolean' },
 			'warn-only': { type: 'boolean' },
 		},
 	});
 
-	const {
-		'dry-run': dryRun,
-		'warn-only': warnOnly,
-	} = cliArgs.values;
-
-	await statusChecks()
-		.then(() => logger.info('Passed status checks'))
-		.catch((err) => {
-			if (err instanceof AggregateError) {
-				const msg = err.message.concat('\n');
-				if (!warnOnly) {
-					logger.error(msg);
-					throw err;
-				} else {
-					logger.warn(msg);
-					logger.warn(err, '\n');
-				}
-			} else if (err instanceof Error) {
-				const e = new Error('Unhandled exception', { cause: err });
-				logger.error(e.message.concat('\n'));
-				throw e;
-			} else {
-				const e = new Error('Unknown exception', { cause: err });
-				logger.error(e.message.concat('\n'));
-				throw e;
-			}
-		});
-
-	upload({ dryRun, warnOnly });
+	const { 'dry-run': dryRun, 'warn-only': warnOnly } = values;
+	return upload({ dryRun, warnOnly });
 }
 
-main();
+if (import.meta.main)
+	cmd();
