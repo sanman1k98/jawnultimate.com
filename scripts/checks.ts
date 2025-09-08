@@ -36,11 +36,8 @@ async function checkInSyncWithOrigin() {
 	}
 }
 
-/** @returns An iterable of pending promises. */
-export function startPreDeployChecks() {
-	return [
-		checkCurrentBranchIsMain(),
-		checkWorkingTreeIsClean(),
-		checkInSyncWithOrigin(),
-	];
-}
+export const preDeployChecks = [
+	checkCurrentBranchIsMain,
+	checkWorkingTreeIsClean,
+	checkInSyncWithOrigin,
+];

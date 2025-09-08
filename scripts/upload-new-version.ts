@@ -1,7 +1,7 @@
 import { createInterface } from 'node:readline/promises';
 import { parseArgs } from 'node:util';
 import * as CalVer from './calver.ts';
-import { startPreDeployChecks } from './checks.ts';
+import { preDeployChecks } from './checks.ts';
 import { getLastModifiedDuration } from './utils/fs.ts';
 import * as Git from './utils/git.ts';
 import { logger } from './utils/log.ts';
@@ -19,9 +19,11 @@ interface UploadOptions {
  * new version to Cloudflare, and push the new tag.
  */
 async function upload(opts: UploadOptions) {
-	await Promise.allSettled(startPreDeployChecks()).then((checks) => {
-		const errors = checks
-			.filter(check => check.status === 'rejected')
+	const pendingChecks = preDeployChecks.map(fn => fn());
+
+	await Promise.allSettled(pendingChecks).then((results) => {
+		const errors = results
+			.filter(res => res.status === 'rejected')
 			.map(res => res.reason);
 
 		if (errors.length) {
