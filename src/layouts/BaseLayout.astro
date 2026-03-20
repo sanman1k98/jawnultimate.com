@@ -109,6 +109,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 		<title>{title}</title>
 		{description && <meta name="description" content={description} />}
 
+		<link rel="preload" href="/fonts/overpass/overpass-light.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href="/fonts/overpass/overpass-regular.woff2" as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href="/fonts/overpass/overpass-bold.woff2" as="font" type="font/woff2" crossorigin />
+
 		<slot name="head" />
 
 		<meta property="og:site_name" content={SITE_NAME} />
