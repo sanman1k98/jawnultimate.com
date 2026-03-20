@@ -46,6 +46,7 @@ async function upload(opts: UploadOptions) {
 	logger.info('Next version: %o -> %o', currentVersion, nextVersion);
 
 	const lastRanBuild = await getLastModifiedDuration('./dist');
+	// @ts-expect-error missing from library definitions.
 	logger.info('Last ran build %o ago.', new Intl.DurationFormat().format(lastRanBuild));
 
 	{
