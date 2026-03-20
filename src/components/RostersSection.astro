@@ -21,7 +21,7 @@ const featuredRosters: Roster[] = [];
 const otherRosters: Roster[] = [];
 
 if (rosters.length) {
-	const latestYear = rosters[0].data.date.getFullYear();
+	const latestYear = rosters[0]!.data.date.getFullYear();
 	for (const roster of rosters) {
 		if (featuredRosters.length < 2 && roster.data.date.getFullYear() === latestYear) featuredRosters.push(roster);
 		else otherRosters.push(roster);
