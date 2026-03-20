@@ -33,6 +33,9 @@ importers:
       '@astrojs/check':
         specifier: ^0.9.8
         version: 0.9.8(prettier-plugin-astro@0.14.1)(prettier@3.6.2)(typescript@5.9.3)
+      '@astrojs/ts-plugin':
+        specifier: ^1.10.7
+        version: 1.10.7
       '@types/node':
         specifier: ^24.3.1
         version: 24.3.1
@@ -167,6 +170,9 @@ packages:
   '@astrojs/telemetry@3.3.0':
     resolution: {integrity: sha512-UFBgfeldP06qu6khs/yY+q1cDAaArM2/7AEIqQ9Cuvf7B1hNLq0xDrZkct+QoIGyjq56y8IaE2I3CTvG99mlhQ==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0}
+
+  '@astrojs/ts-plugin@1.10.7':
+    resolution: {integrity: sha512-CFJQgMLxi7F21VMcLBuAQmD9KrnT/ACfhZgdhsmVzOcb5Lscu7MIUl/ZxYDviXqDnhDBF1JzYOj+kusJlGmG8w==}
 
   '@astrojs/yaml2ts@0.2.3':
     resolution: {integrity: sha512-PJzRmgQzUxI2uwpdX2lXSHtP4G8ocp24/t+bZyf5Fy0SZLSF9f9KXZoMlFM/XCGue+B0nH/2IZ7FpBYQATBsCg==}
@@ -3016,6 +3022,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.7.4:
+    resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   sharp@0.33.5:
     resolution: {integrity: sha512-haPVm1EkS9pgvHrQ/F3Xy+hgcuMV0Wm9vfIBSiwZ05k+xgb0PkBQpGsAA/oWdDobNaZTH5ppvHtzCFbnSEwHVw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
@@ -3797,6 +3808,16 @@ snapshots:
       which-pm-runs: 1.1.0
     transitivePeerDependencies:
       - supports-color
+
+  '@astrojs/ts-plugin@1.10.7':
+    dependencies:
+      '@astrojs/compiler': 2.13.1
+      '@astrojs/yaml2ts': 0.2.3
+      '@jridgewell/sourcemap-codec': 1.5.5
+      '@volar/language-core': 2.4.28
+      '@volar/typescript': 2.4.28
+      semver: 7.7.4
+      vscode-languageserver-textdocument: 1.0.12
 
   '@astrojs/yaml2ts@0.2.3':
     dependencies:
@@ -6780,6 +6801,8 @@ snapshots:
       regexp-ast-analysis: 0.7.1
 
   semver@7.7.2: {}
+
+  semver@7.7.4: {}
 
   sharp@0.33.5:
     dependencies:
