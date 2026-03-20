@@ -60,8 +60,8 @@ const twitterSchema = z.object({
 
 const headMeta = basic
 	.extend({
-		og: ogSchema.default({}),
-		twitter: twitterSchema.default({}),
+		og: ogSchema.prefault({}),
+		twitter: twitterSchema.prefault({}),
 	})
 	.transform((data) => {
 		const { og, twitter, ...basic } = data;

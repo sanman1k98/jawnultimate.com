@@ -1,33 +1,13 @@
 import { z } from 'astro/zod';
 
-/** Date only form "YYYY-MM". */
-const rosterDateRegex = /^\d{4}-\d{2}/;
-
-const RosterDateSchema = z.coerce.string().transform((arg, ctx) => {
-	if (!rosterDateRegex.test(arg)) {
-		ctx.addIssue({
-			code: z.ZodIssueCode.custom,
-			message: 'Must use form YYYY-MM',
-		});
-		return z.NEVER;
-	}
-
-	const date = new Date(arg);
-	if (Number.isNaN(date.valueOf())) {
-		ctx.addIssue({
-			code: z.ZodIssueCode.invalid_date,
-			message: 'Must use form YYYY-MM',
-		});
-		return z.NEVER;
-	}
-
-	return date;
-});
+const RosterDateSchema = z
+	.stringFormat('YYYY-MM', /^\d{4}-\d{2}/)
+	.pipe(z.coerce.date());
 
 const DivisionSchema = z.enum(['mixed', 'open']);
 
 const JerseyNumberSchema = z.union([
-	z.number().min(0).max(99).int(),
+	z.int().min(0).lt(100),
 	z.string().regex(/^\d{2}$/), // Handles cases like "00".
 ]);
 
@@ -57,7 +37,7 @@ const PlayerListSchema = PlayerSchema.array().superRefine((players, ctx) => {
 	for (const [name, occurrences] of nameOccurs.entries()) {
 		if (occurrences > 1) {
 			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
+				code: 'custom',
 				message: `Player names must be unique: ${occurrences} players have the same name "${name}"`,
 			});
 		}
@@ -67,7 +47,7 @@ const PlayerListSchema = PlayerSchema.array().superRefine((players, ctx) => {
 	for (const [number, names] of reverseLookup.entries()) {
 		if (names.length > 1) {
 			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
+				code: 'custom',
 				message: `Jersey numbers must be unique: ${names.join(', ')} have the same number "${number}"`,
 			});
 		}
