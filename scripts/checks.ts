@@ -1,43 +1,19 @@
+import { check, checklist, run } from './utils/check.ts';
 import * as Git from './utils/git.ts';
 
-export class CheckFailure extends Error {
-	public hint: string;
+checklist('pre-deploy', () => {
+	check('on main branch', async () => {
+		return Git.getCurrentBranch().then(branch => branch === 'main');
+	});
 
-	constructor(message: string, options: { hint: string }) {
-		super(message);
-		this.hint = options.hint;
-	}
-}
+	check('working tree is clean', async () => {
+		return Git.getShortStatus().then(status => !status);
+	});
 
-async function checkCurrentBranchIsMain() {
-	const branch = await Git.getCurrentBranch();
-	if (branch !== 'main') {
-		throw new CheckFailure('Not on main branch', {
-			hint: 'Switch to main branch',
-		});
-	}
-}
+	check('local in-sync with remote', async () => {
+		return Git.inSyncWithOrigin();
+	});
+});
 
-async function checkWorkingTreeIsClean() {
-	const status = await Git.getShortStatus();
-	if (status) {
-		throw new CheckFailure('Working tree is not clean', {
-			hint: 'Commit or stash changes',
-		});
-	}
-}
-
-async function checkInSyncWithOrigin() {
-	const inSync = await Git.getCurrentBranch().then(Git.inSyncWithOrigin);
-	if (!inSync) {
-		throw new CheckFailure('Local is not in-sync with origin', {
-			hint: 'Pull and/or push changes to and/or from origin',
-		});
-	}
-}
-
-export const preDeployChecks = [
-	checkCurrentBranchIsMain,
-	checkWorkingTreeIsClean,
-	checkInSyncWithOrigin,
-];
+if (import.meta.main)
+	run();
