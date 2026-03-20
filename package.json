@@ -12,12 +12,12 @@
 		"wrangler": "wrangler"
 	},
 	"dependencies": {
-		"@astrojs/sitemap": "^3.5.1",
+		"@astrojs/sitemap": "^3.7.1",
 		"@resvg/resvg-js": "^2.6.2",
-		"@tailwindcss/vite": "^4.1.13",
-		"astro": "^5.13.5",
+		"@tailwindcss/vite": "^4.2.2",
+		"astro": "^6.0.7",
 		"satori": "^0.26.0",
-		"tailwindcss": "^4.1.13"
+		"tailwindcss": "^4.2.2"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^7.7.3",

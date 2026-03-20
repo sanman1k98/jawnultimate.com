@@ -17,8 +17,6 @@ export default defineConfig({
 	},
 
 	experimental: {
-		preserveScriptOrder: true, // default in Astro 6
-		headingIdCompat: true, // default in Astro 6
-		staticImportMetaEnv: true, // default in Astro 6
+		queuedRendering: { enabled: true },
 	},
 });
