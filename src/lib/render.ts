@@ -62,11 +62,11 @@ export async function toSVG<P extends {}>(
 	return await satori(createElement(Component), satoriOpts);
 }
 
-export async function toPNG(svg: string, opts: ResvgRenderOptions): Promise<Uint8Array> {
+export async function toPNG(svg: string, opts: ResvgRenderOptions): Promise<Uint8Array<ArrayBuffer>> {
 	const resvg = new Resvg(svg, {
 		font: { loadSystemFonts: false },
 		...opts,
 	});
 
-	return resvg.render().asPng();
+	return resvg.render().asPng() as Uint8Array<ArrayBuffer>;
 }
