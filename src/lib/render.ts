@@ -1,10 +1,10 @@
 import type { ResvgRenderOptions } from '@resvg/resvg-js';
 import type { Font as SatoriFont, SatoriOptions } from 'satori';
-import type { FC } from './satori';
+import type { FC } from 'satori/jsx';
 import { readFile } from 'node:fs/promises';
 import { Resvg } from '@resvg/resvg-js';
 import satori from 'satori';
-import { createElement } from './satori';
+import { createElement } from 'satori/jsx';
 
 export type FontOptions = Omit<SatoriFont, 'data'> & {
 	path: string | URL;

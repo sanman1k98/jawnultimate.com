@@ -1,6 +1,9 @@
+import type * as CSS from 'csstype';
+import type { JSXNode } from 'satori/jsx';
 import type { FontOptions } from '@/lib/render';
-import type { JSXNode, JSXStyleProperties } from '@/lib/satori';
 import { cwd } from 'node:process';
+
+interface JSXStyleProperties extends CSS.Properties<string | number> { };
 
 export type { SVGRenderOptions } from '@/lib/render';
 

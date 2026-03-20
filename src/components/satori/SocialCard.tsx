@@ -1,5 +1,6 @@
 /** @jsxRuntime automatic */
-/** @jsxImportSource #satori/jsx */
+/** @jsxImportSource satori/jsx */
+
 import type { Props, SVGRenderOptions } from './shared';
 import { SATORI_SQUARE_ELEMENT_CLIP_PATHS } from '@/lib/css-shapes';
 import {
