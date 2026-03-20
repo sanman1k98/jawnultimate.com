@@ -40,7 +40,7 @@ type Props = { class?: string };
 					<li>
 						<a
 							class="block w-36 rounded-lg bg-emerald-600 p-3 px-4 text-lg font-bold text-white shadow shadow-emerald-500"
-							href={`/${id}`}
+							href={`/${id}/`}
 						>
 							{date.getFullYear()} {division.charAt(0).toUpperCase().concat(division.slice(1))}
 						</a>
@@ -52,7 +52,7 @@ type Props = { class?: string };
 			{
 				otherRosters.map(({ id, data: { date, division } }) => (
 					<li>
-						<a class="underline" href={`/${id}`}>
+						<a class="underline" href={`/${id}/`}>
 							{date.getFullYear()} {division.charAt(0).toUpperCase().concat(division.slice(1))}
 						</a>
 					</li>
